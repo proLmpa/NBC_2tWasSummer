@@ -55,16 +55,6 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authorizeHttpRequests ->
                 authorizeHttpRequests
                         .requestMatchers("/api/users/**").permitAll() // '/api/users'로 시작하는 모든 요청 접근 허가
-
-                        // 백엔드 세부 기능 구현 필요 시 각각 활성화 할 것
-//                        .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/replies/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/profiles/**").permitAll()
-
-                        // 프론트엔드 구현시 활성화 할 것
-//                        .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-//                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-
                         .requestMatchers("/swagger-ui/**", "/v3/**").permitAll() // swagger-ui 와 관련된 모든 요청 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
