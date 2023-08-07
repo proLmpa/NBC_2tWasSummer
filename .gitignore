@@ -1,5 +1,7 @@
 HELP.md
 .gradle
+application-ds.properties
+application-key.properties
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
