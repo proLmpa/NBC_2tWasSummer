@@ -1,27 +1,32 @@
 package com.example.itwassummer.comment.service;
 
+import com.example.itwassummer.card.entity.Card;
+import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.comment.dto.CommentCreateRequestDto;
 import com.example.itwassummer.comment.dto.CommentEditRequestDto;
 import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.comment.repository.CommentRepository;
 import com.example.itwassummer.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service //issue @Service 어노테이션을 여기에?
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-//    private final CardRepository cardRepository;
+    private final CardRepository cardRepository;
 
     @Override
     public String createComment(Long cardId, CommentCreateRequestDto requestDto, User user) {
 
         Comment comment = new Comment(requestDto);
-//        Card card = cardRepository.findById(cardId).orElseThrow(()
-//                -> new IllegalArgumentException("존재하지 않는 카드입니다."));todo card 작업 이후
-//        comment.addCard(card);
-//        commentRepository.save(comment);
+        Card card = cardRepository.findById(cardId).orElseThrow(()
+                -> new IllegalArgumentException("존재하지 않는 카드입니다."));
+        comment.addCard(card);
+        comment.addUser(user);
+        commentRepository.save(comment);
 
         return "코멘트 생성 완료";
     }

@@ -8,7 +8,7 @@ import com.example.itwassummer.user.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service //issue @Service 어노테이션을 여기에? 혹은 Impl에?
+
 public interface CommentService {
 
     String createComment(Long cardId, CommentCreateRequestDto requestDto, User user);
