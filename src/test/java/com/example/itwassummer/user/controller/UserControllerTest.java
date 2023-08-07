@@ -36,14 +36,14 @@ class UserControllerTest {
         // given
         String email = "user@email.com";
         String password = "user123!@#";
-        boolean isAdmin = false;
+        boolean admin = false;
         String adminToken = "";
 
         // when
         String body = mapper.writeValueAsString(
                 SignupRequestDto.builder()
                         .email(email).password(password)
-                        .isAdmin(isAdmin).adminToken(adminToken)
+                        .admin(admin).adminToken(adminToken)
                         .build()
         );
 
@@ -62,14 +62,14 @@ class UserControllerTest {
         // given
         String email = "user@email.com";
         String password = "user123!@#";
-        boolean isAdmin = false;
+        boolean admin = false;
         String adminToken = "";
 
         // when
         String body = mapper.writeValueAsString(
                 SignupRequestDto.builder()
                         .email(email).password(password)
-                        .isAdmin(isAdmin).adminToken(adminToken)
+                        .admin(admin).adminToken(adminToken)
                         .build()
         );
 
