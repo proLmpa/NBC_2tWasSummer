@@ -1,9 +1,13 @@
 package com.example.itwassummer.card.entity;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
+import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.deck.entity.Deck;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "card")
 public class Card {
+
+    ////칼럼들
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id")
@@ -25,9 +32,17 @@ public class Card {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dueDate;
 
-
     @Column(length = 100)
     private String description;
+
+    @Column(length = 10, nullable = false)
+    private Long parentId;
+
+
+    ////연관관계
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
    /*
    @ManyToOne
@@ -40,8 +55,8 @@ public class Card {
 
     */
 
-    @Column(length = 10, nullable = false)
-    private Long parentId;
+
+    ////생성자
 
     @Builder
     public Card(String name, LocalDateTime dueDate, String description, Long parentId){
