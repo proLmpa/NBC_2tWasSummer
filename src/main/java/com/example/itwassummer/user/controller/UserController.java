@@ -1,18 +1,20 @@
 package com.example.itwassummer.user.controller;
 
 import com.example.itwassummer.common.dto.ApiResponseDto;
+import com.example.itwassummer.common.security.UserDetailsImpl;
+import com.example.itwassummer.user.dto.EditUserRequestDto;
+import com.example.itwassummer.user.dto.EditUserResponseDto;
 import com.example.itwassummer.user.dto.LoginRequestDto;
 import com.example.itwassummer.user.dto.SignupRequestDto;
+import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -36,5 +38,19 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto> login(@RequestBody LoginRequestDto requestDto) {
         return null;
+    }
+
+     @Operation(summary = "유저 정보 수정", description = "전달된 Bearer 토큰을 통해 본인 확인 후 EditUserRequestDto를 통해 해당 사용자의 일부 정보를 수정합니다.")
+     @PatchMapping("/info")
+    public ResponseEntity<EditUserResponseDto> editUserInfo(@RequestBody EditUserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userService.editUserInfo(requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new EditUserResponseDto(user.getNickname(), user.getIntroduction()));
+    }
+
+    @Operation(summary = "유저 정보 삭제", description = "전달된 Bearer 토큰을 통해 본인 혹은 관리자 여부 확인 후 userId를 통해 찾은 사용자의 정보를 삭제합니다.")
+    @DeleteMapping("/signout")
+    public ResponseEntity<ApiResponseDto> deleteUserInfo(@RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.deleteUserInfo(userId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 정보 삭제 성공"));
     }
 }

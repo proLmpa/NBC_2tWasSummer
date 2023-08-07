@@ -15,19 +15,29 @@ public class User {
     private Long id;
 
     @Email
-    @Column(nullable = false, name = "email")
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false, name = "password")
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    private String nickname;
+    private String introduction;
+
     public User(String email, String password, UserRoleEnum role) {
         this.email = email;
         this.password = password;
         this.role = role;
+        nickname = email.substring(0, email.indexOf('@'));
+        introduction = "I'm " + nickname + " from ITWASSUMMER:D";
+    }
+
+    public void editUserInfo(String nickname, String introduction) {
+        this.nickname = nickname;
+        this.introduction = introduction;
     }
 }

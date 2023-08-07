@@ -7,6 +7,7 @@ import com.example.itwassummer.common.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -54,7 +55,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests(authorizeHttpRequests ->
                 authorizeHttpRequests
-                        .requestMatchers("/api/users/**").permitAll() // '/api/users'로 시작하는 모든 요청 접근 허가
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll() // '/api/users'로 시작하는 모든 요청 접근 허가
                         .requestMatchers("/swagger-ui/**", "/v3/**").permitAll() // swagger-ui 와 관련된 모든 요청 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
