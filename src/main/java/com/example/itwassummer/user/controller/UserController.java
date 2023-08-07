@@ -8,6 +8,7 @@ import com.example.itwassummer.user.dto.LoginRequestDto;
 import com.example.itwassummer.user.dto.SignupRequestDto;
 import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.service.UserService;
+import com.example.itwassummer.userpassword.dto.EditPasswordRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -52,5 +53,12 @@ public class UserController {
     public ResponseEntity<ApiResponseDto> deleteUserInfo(@RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.deleteUserInfo(userId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 정보 삭제 성공"));
+    }
+
+    @Operation(summary = "유저 비밀번호 수정", description = "전달된 Bearer 토큰을 통해 본인 확인 후 EditPasswordRequestDto를 통해 해당 사용자의 비밀번호를 수정합니다.")
+    @PatchMapping("/password")
+    public ResponseEntity<ApiResponseDto> editUserPassword(@Valid @RequestBody EditPasswordRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.editUserPassword(requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 비밀번호 수정 성공"));
     }
 }
