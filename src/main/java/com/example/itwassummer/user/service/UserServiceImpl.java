@@ -6,6 +6,7 @@ import com.example.itwassummer.user.dto.SignupRequestDto;
 import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,8 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    private static final String ADMINTOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${admin.token}")
+    private static String adminToken;
 
     @Transactional
     @Override
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
         }
 
         UserRoleEnum role = UserRoleEnum.USER;
-        if(requestDto.isAdmin() && requestDto.getAdminToken().equals(ADMINTOKEN)) {
+        if(requestDto.isAdmin() && requestDto.getAdminToken().equals(adminToken)) {
             role = UserRoleEnum.ADMIN;
         }
 
