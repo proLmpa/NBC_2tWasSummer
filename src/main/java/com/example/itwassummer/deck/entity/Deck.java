@@ -23,7 +23,7 @@ public class Deck {
 
     @OneToOne(fetch = FetchType.EAGER) // 덱들은 항상 같이 조회되므로
     @JoinColumn(name="parent_id")
-    private Deck deck;
+    private Deck parent;
 
     private Boolean is_deleted;
 
