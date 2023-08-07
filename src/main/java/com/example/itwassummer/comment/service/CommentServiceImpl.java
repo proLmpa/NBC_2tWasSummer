@@ -12,14 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+//    private final CardRepository cardRepository;
 
     @Override
     public String createComment(Long cardId, CommentCreateRequestDto requestDto, User user) {
 
         Comment comment = new Comment(requestDto);
-//        Card card = todo card 작업 이후
-
-        comment.addCard(card);
+//        Card card = cardRepository.findById(cardId).orElseThrow(()
+//                -> new IllegalArgumentException("존재하지 않는 카드입니다."));todo card 작업 이후
+//        comment.addCard(card);
+//        commentRepository.save(comment);
 
         return "코멘트 생성 완료";
     }
