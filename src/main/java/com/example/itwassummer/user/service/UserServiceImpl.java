@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Value("${admin.token}")
-    private static String adminToken;
+    private String adminToken;
 
     @Transactional
     @Override
