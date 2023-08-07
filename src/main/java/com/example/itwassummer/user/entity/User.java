@@ -1,9 +1,13 @@
 package com.example.itwassummer.user.entity;
 
+import com.example.itwassummer.userpassword.entity.UserPassword;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +32,9 @@ public class User {
     private String nickname;
     private String introduction;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<UserPassword> userPasswords = new ArrayList<>();
+
     public User(String email, String password, UserRoleEnum role) {
         this.email = email;
         this.password = password;
@@ -39,5 +46,9 @@ public class User {
     public void editUserInfo(String nickname, String introduction) {
         this.nickname = nickname;
         this.introduction = introduction;
+    }
+
+    public void editPassword(String newPassword) {
+        this.password = newPassword;
     }
 }
