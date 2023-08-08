@@ -38,22 +38,22 @@ public class BoardController {
 
     @Operation(summary = "보드 생성", description = "새로운 보드를 생성합니다.")
     @PostMapping("/")
-    public ResponseEntity createBoards(@RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        boardService.createBoards(requestDto,userDetails.getUser());
+    public ResponseEntity createBoards(@RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.createBoards(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "보드 생성 성공"));
     }
 
     @Operation(summary = "보드 수정", description = "배경 색상 / 보드 이름 / 설명을 수정합니다.")
     @PutMapping("/{boardId}")
-    public ResponseEntity updateBoards(@PathVariable("boardId") Long id, @RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        BoardResponseDto returnDto = boardService.update(id, requestDto,userDetails.getUser());
+    public ResponseEntity updateBoards(@PathVariable("boardId") Long id, @RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        BoardResponseDto returnDto = boardService.update(id, requestDto, userDetails.getUser());
         return new ResponseEntity<>(returnDto, HttpStatus.OK);
     }
 
     @Operation(summary = "보드 삭제", description = "보드를 생성한 사용자만 삭제를 할 수 있습니다.")
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<ApiResponseDto> deleteBoards(@PathVariable("boardId") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        boardService.delete(id,userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> deleteBoards(@PathVariable("boardId") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.delete(id, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "보드 삭제 성공"));
     }
 

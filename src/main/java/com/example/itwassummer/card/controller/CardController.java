@@ -58,7 +58,6 @@ public class CardController {
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 가입 성공"));
   }
 
-
   /**
    * 댓글 목록 조회
    * */

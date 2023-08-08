@@ -24,7 +24,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponseDto showBoards(Long id) {
         Board board = boardRepository.findById(id).orElseThrow(()
-            -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
+                -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
         return new BoardResponseDto(board);
     }
 
@@ -35,7 +35,7 @@ public class BoardServiceImpl implements BoardService {
 
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
-        for(Board board : boardList){
+        for (Board board : boardList) {
             boardResponseDtoList.add(new BoardResponseDto(board));
         }
         return null;
@@ -43,10 +43,10 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void createBoards(BoardRequestDto requestDto, User user) {
-        if(requestDto.getBoard_name().isEmpty()){
-            throw new CustomException(CustomErrorCode.BOARD_NAME_ISNULL,null);
+        if (requestDto.getBoard_name().isEmpty()) {
+            throw new CustomException(CustomErrorCode.BOARD_NAME_ISNULL, null);
         }
-        Board board = new Board(requestDto,user);
+        Board board = new Board(requestDto, user);
         boardRepository.save(board);
     }
 
@@ -58,18 +58,19 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto update(Long id, BoardRequestDto requestDto, User user) {
         Board board = confirmUser(id, user);
 
-        if(!requestDto.getBoard_name().isEmpty()){
+        if (!requestDto.getBoard_name().isEmpty()) {
             board.setBoard_name(requestDto.getBoard_name());
         }
-        if(!requestDto.getDescription().isEmpty()){
+        if (!requestDto.getDescription().isEmpty()) {
             board.setDescription(requestDto.getDescription());
         }
-        if(!requestDto.getColor().isEmpty()){
+        if (!requestDto.getColor().isEmpty()) {
             board.setColor(requestDto.getColor());
         }
 
         return new BoardResponseDto(board);
     }
+
     @Override
     @Transactional
     public void delete(Long id, User user) {
@@ -87,7 +88,7 @@ public class BoardServiceImpl implements BoardService {
             if (board.getUser().getId() == user.getId()) { // 작성자 검증
                 return board;
             } else {
-                throw new CustomException(CustomErrorCode.BOARD_NAME_ISNULL,null);
+                throw new CustomException(CustomErrorCode.BOARD_NAME_ISNULL, null);
             }
         } else { // 관리자 회원
             return board;
