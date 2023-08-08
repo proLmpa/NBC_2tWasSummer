@@ -1,12 +1,8 @@
 package com.example.itwassummer.deck.service;
 
-import com.example.itwassummer.deck.repository.DeckRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.itwassummer.deck.dto.DeckRequestDto;
+import com.example.itwassummer.deck.dto.DeckResponseDto;
 
-@Service
-@RequiredArgsConstructor
-public class DeckService {
-	private final DeckRepository deckRepository;
-
+public interface DeckService {
+	DeckResponseDto createDeck(Long boardId, DeckRequestDto requestDto);
 }
