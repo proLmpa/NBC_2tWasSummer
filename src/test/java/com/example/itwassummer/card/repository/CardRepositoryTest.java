@@ -21,6 +21,7 @@ import org.springframework.test.context.TestPropertySource;
 @Import(QueryDslConfig.class)
 @Rollback(false)
 public class CardRepositoryTest {
+
   @Autowired
   CardRepository cardRepository;
 

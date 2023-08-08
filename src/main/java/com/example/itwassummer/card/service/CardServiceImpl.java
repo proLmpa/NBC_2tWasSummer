@@ -9,6 +9,7 @@ import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.user.dto.SignupRequestDto;
 import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.entity.UserRoleEnum;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +59,9 @@ public class CardServiceImpl implements CardService{
   @Transactional
   public void delete(Long cardId) {
     Card card = findCard(cardId);
-    cardRepository.delete(card);
+
+    cardRepository.deleteById(card.getId());
+
   }
 
   // 해당 게시글이 DB에 존재하는지 확인

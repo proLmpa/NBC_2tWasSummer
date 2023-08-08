@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
+@Rollback(false)
 public class CardControllerTest {
 
   @Autowired
@@ -39,8 +41,8 @@ public class CardControllerTest {
   @DisplayName("카드 등록 테스트")
   void insertCards() throws Exception {
     // given
-    String name = "예시카드1";
-    Long parentId = Long.valueOf(1);
+    String name = "예시카드new";
+    Long parentId = Long.valueOf(5);
     String description = "예시카드입니다.";
     String header = login();
     LocalDateTime now = LocalDateTime.now();
