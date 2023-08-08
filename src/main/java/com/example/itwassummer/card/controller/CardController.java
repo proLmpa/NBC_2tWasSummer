@@ -45,17 +45,17 @@ public class CardController {
   }
 
   @Operation(summary = "카드 수정", description = "CardRequestDto를 통해 카드정보를 전달 받은 후 DB에 저장하고 성공 메시지를 반환합니다.")
-  @PutMapping("/cards")
-  public ResponseEntity updateCards(@Valid @RequestBody CardRequestDto requestDto) throws IllegalAccessException {
-    CardResponseDto returnDto = cardService.update(requestDto);
+  @PutMapping("/cards/{cardId}")
+  public ResponseEntity updateCards(@PathVariable("cardId") Long cardId, @Valid @RequestBody CardRequestDto requestDto) throws IllegalAccessException {
+    CardResponseDto returnDto = cardService.update(cardId, requestDto);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
   }
 
   @Operation(summary = "카드 삭제", description = "id 값을 통해 삭제")
-  @DeleteMapping("/cards/{id}")
-  public ResponseEntity<ApiResponseDto> deleteCards(@PathVariable("id") Long id) throws IllegalAccessException {
-    cardService.delete(id);
-    return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 가입 성공"));
+  @DeleteMapping("/cards/{cardId}")
+  public ResponseEntity<ApiResponseDto> deleteCards(@PathVariable("cardId") Long cardId) throws IllegalAccessException {
+    cardService.delete(cardId);
+    return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "삭제 성공"));
   }
 
 

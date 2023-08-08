@@ -20,6 +20,7 @@ public class CardServiceImpl implements CardService{
   private final CardRepository cardRepository;
 
   @Override
+  @Transactional
   public CardResponseDto save(CardRequestDto requestDto) throws IllegalAccessException {
     Card card = Card.builder()
         .name(requestDto.getName())
@@ -38,12 +39,32 @@ public class CardServiceImpl implements CardService{
   }
 
   @Override
-  public CardResponseDto update(CardRequestDto requestDto) {
-    return null;
+  @Transactional
+  public CardResponseDto update(Long cardId, CardRequestDto requestDto) {
+    Card card = findCard(cardId);
+    // card 내용 수정
+    card.update(requestDto);
+    CardResponseDto responseDto = CardResponseDto
+        .builder()
+        .name(card.getName())
+        .dueDate(String.valueOf(card.getDueDate()))
+        .description(card.getDescription())
+        .build();
+
+    return responseDto;
   }
 
   @Override
-  public void delete(Long id) {
+  @Transactional
+  public void delete(Long cardId) {
+    Card card = findCard(cardId);
+    cardRepository.delete(card);
+  }
 
+  // 해당 게시글이 DB에 존재하는지 확인
+  // 공통 에러메시지는 추후에 커밋된 내용 받아서 수정 예정
+  public Card findCard(Long cardId) {
+    return cardRepository.findById(cardId).orElseThrow(() ->
+        new RuntimeException("게시글이없습니다.", null));
   }
 }
