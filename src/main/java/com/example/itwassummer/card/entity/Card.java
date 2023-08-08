@@ -2,6 +2,7 @@ package com.example.itwassummer.card.entity;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.comment.entity.Comment;
+import com.example.itwassummer.common.file.S3FileDto;
 import com.example.itwassummer.deck.entity.Deck;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -18,31 +19,35 @@ import lombok.NoArgsConstructor;
 @Table(name = "card")
 public class Card {
 
-    ////칼럼들
+  ////칼럼들
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "card_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "card_id")
+  private Long id;
 
-    @Column(length = 10, nullable = false)
-    private String name;
+  @Column(length = 10, nullable = false)
+  private String name;
 
+  @Column
+  @Temporal(TemporalType.TIMESTAMP)
+  private LocalDateTime dueDate;
+
+  @Column(length = 100)
+  private String description;
+
+  @Column(length = 10, nullable = false)
+  private Long parentId;
+
+/*
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime dueDate;
+    private String attachment;
+*/
 
-    @Column(length = 100)
-    private String description;
+  ////연관관계
 
-    @Column(length = 10, nullable = false)
-    private Long parentId;
-
-
-    ////연관관계
-
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
    /*
    @ManyToOne
@@ -55,21 +60,31 @@ public class Card {
 
     */
 
+  @Column
+  private String attachment;
 
-    ////생성자
+  ////생성자
 
-    @Builder
-    public Card(String name, LocalDateTime dueDate, String description, Long parentId){
-        this.name = name;
-        this.dueDate = dueDate;
-        this.description = description;
-        this.parentId = parentId;
-    }
+  @Builder
+  public Card(CardRequestDto requestDto) {
+    this.name = requestDto.getName();
+    this.dueDate = requestDto.getDueDate();
+    this.description = requestDto.getDescription();
+    this.attachment = requestDto.getAttachment();
+    this.parentId = requestDto.getParentId();
+  }
 
-    public void update(CardRequestDto requestDto) {
-        this.name = requestDto.getName();
-        this.dueDate = requestDto.getDueDate();
-        this.description = requestDto.getDescription();
-    }
+  // 수정
+  public void update(CardRequestDto requestDto) {
+    this.name = requestDto.getName();
+    this.dueDate = requestDto.getDueDate();
+    this.description = requestDto.getDescription();
+    this.attachment = requestDto.getAttachment();
+  }
+
+  // 마감일 수정
+  public void updateDueDate(LocalDateTime dueDate) {
+    this.dueDate = dueDate;
+  }
 
 }

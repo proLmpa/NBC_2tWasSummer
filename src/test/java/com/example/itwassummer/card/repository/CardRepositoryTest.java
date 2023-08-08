@@ -3,9 +3,9 @@ package com.example.itwassummer.card.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.common.config.QueryDslConfig;
-import com.example.itwassummer.user.entity.UserRoleEnum;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,24 @@ public class CardRepositoryTest {
   CardRepository cardRepository;
 
 
+  /**
+   * 카드 등록
+   */
   @Test
   void insertTest() {
     String name = "예시카드2";
     Long parentId = Long.valueOf(1);
     String description = "예시카드입니다.";
     LocalDateTime now = LocalDateTime.now();
+    CardRequestDto requestDto = CardRequestDto.builder()
+        .name(name)
+        .dueDate(now)
+        .description(description)
+        .parentId(parentId)
+        .attachment("")
+        .build();
     // given
-    var cards = new Card(name, now, description, parentId);
+    var cards = new Card(requestDto);
     // when
     Card newCard = cardRepository.save(cards);
     // then
