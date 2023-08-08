@@ -26,7 +26,7 @@ public class Deck extends Timestamped {
 	@JoinColumn(name = "parent_id")
 	private Deck parent;
 
-	private Boolean is_deleted;
+	private Boolean isDeleted = false;
 
 	public Deck(String name, Board board) {
 		this.name = name;
