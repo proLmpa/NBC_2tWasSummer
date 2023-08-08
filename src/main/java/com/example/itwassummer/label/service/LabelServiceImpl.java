@@ -1,5 +1,6 @@
 package com.example.itwassummer.label.service;
 
+import com.example.itwassummer.board.entity.Board;
 import com.example.itwassummer.label.dto.LabelCreateRequestDto;
 import com.example.itwassummer.label.dto.LabelEditRequestDto;
 import com.example.itwassummer.label.dto.LabelResponseDto;

@@ -27,6 +27,12 @@ public class Label {
 
 
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
+    public Label(Long id, String title, String color) {
+        this.id = id;
+        this.title = title;
+        this.color = color;
+    }
+
     public Label(LabelCreateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.color = requestDto.getColor();
@@ -45,7 +51,6 @@ public class Label {
         this.board = board;
 //        board.getLabels.add(this); todo Board 작업이후 수정 예정
     }
-
 
     //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
     public void editLabel(LabelEditRequestDto requestDto) {
