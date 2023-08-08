@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    public UserController (UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -44,8 +44,8 @@ public class UserController {
         return ResponseEntity.ok().body(new UserResponseDto(user));
     }
 
-     @Operation(summary = "사용자 정보 수정", description = "전달된 Bearer 토큰을 통해 본인 확인 후 EditUserRequestDto를 통해 해당 사용자의 일부 정보를 수정합니다.")
-     @PatchMapping("/info")
+    @Operation(summary = "사용자 정보 수정", description = "전달된 Bearer 토큰을 통해 본인 확인 후 EditUserRequestDto를 통해 해당 사용자의 일부 정보를 수정합니다.")
+    @PatchMapping("/info")
     public ResponseEntity<EditUserResponseDto> editUserInfo(@RequestBody EditUserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userService.editUserInfo(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new EditUserResponseDto(user.getNickname(), user.getIntroduction()));
