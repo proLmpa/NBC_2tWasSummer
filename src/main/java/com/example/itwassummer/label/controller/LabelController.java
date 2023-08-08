@@ -24,18 +24,18 @@ public class LabelController {
     private final LabelService labelService;
 
 
-    @PostMapping("/labels/{boardId}")
+    @PostMapping("/labels")
     @Operation(summary = "새로운 라벨 생성", description = "라벨의 이름과 색상 정보를 받아 새로운 라벨을 생성합니다.")
-    public ResponseEntity<ApiResponseDto> createLabel(LabelCreateRequestDto requestDto, @PathVariable Long boardId) {
+    public ResponseEntity<ApiResponseDto> createLabel(LabelCreateRequestDto requestDto, @RequestParam("boardId") Long boardId) {
 
         String result = labelService.createLabel(requestDto, boardId);
 
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), result));
     }
 
-    @GetMapping("/labels/{boardId}")
+    @GetMapping("/labels")
     @Operation(summary = "라벨 리스트 조회", description = "라벨의 이름과 색상 정보를 받아 새로운 라벨을 생성합니다.")
-    public ResponseEntity<List<LabelResponseDto>> getLabels(@PathVariable Long boardId) {
+    public ResponseEntity<List<LabelResponseDto>> getLabels(@RequestParam Long boardId) {
 
         List<LabelResponseDto> labelResponseDtos = labelService.getLabels(boardId);
 
