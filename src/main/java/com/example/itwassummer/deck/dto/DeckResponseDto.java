@@ -4,7 +4,7 @@ import com.example.itwassummer.deck.entity.Deck;
 import lombok.Getter;
 
 @Getter
-public class DeckResponseDto{
+public class DeckResponseDto {
 	private Long id;
 	private Long parentId;
 	private String name;
@@ -12,7 +12,7 @@ public class DeckResponseDto{
 	//	private List<CardResponseDto> cards = new ArrayList<>();
 	public DeckResponseDto(Deck deck) {
 		this.id = deck.getId();
-		this.parentId = deck.getParent().getId();
+		this.parentId = deck.getParent() == null ? null : deck.getParent().getId();
 		this.name = deck.getName();
 	}
 
