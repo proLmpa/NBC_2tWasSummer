@@ -1,6 +1,5 @@
 package com.example.itwassummer.label.service;
 
-import com.example.itwassummer.board.entity.Board;
 import com.example.itwassummer.label.dto.LabelCreateRequestDto;
 import com.example.itwassummer.label.dto.LabelEditRequestDto;
 import com.example.itwassummer.label.dto.LabelResponseDto;
@@ -21,6 +20,7 @@ public class LabelServiceImpl implements LabelService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<LabelResponseDto> getLabels(Long boardId) {
 
         List<Label> labels = labelRepository.findAllByBoard_Id(boardId);
@@ -30,6 +30,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
+    @Transactional
     public String createLabel(LabelCreateRequestDto requestDto, Long boardId) {
 
 //        Board board = boardRepository.findById(boardId); //todo Board 머지 후 수정
@@ -54,6 +55,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
+    @Transactional
     public String deleteLabel(Long labelId) {
 
         Label label = labelRepository.findById(labelId)
