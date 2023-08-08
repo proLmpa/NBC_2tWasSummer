@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DeckServiceImpl implements DeckService {
@@ -22,6 +24,12 @@ public class DeckServiceImpl implements DeckService {
 		Board board = findBoard(boardId);
 		String name = requestDto.getName();
 		Deck deck = new Deck(name, board);
+
+		List<Deck> decks = deckRepository.findAll();
+		if(decks.size()==0){
+			deckRepository.save(deck);
+			return new DeckResponseDto(deck);
+		}
 
 		if (requestDto.getParentId() == 0) {
 
