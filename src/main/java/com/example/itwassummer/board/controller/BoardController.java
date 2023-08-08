@@ -57,6 +57,7 @@ public class BoardController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "보드 삭제 성공"));
     }
 
-    // 보드 초대
-    // 특정 사용자들을 해당 보드에 초대시켜 협업을 할 수 있어야 합니다.
+//    // 보드 초대
+//
+//    @Operation(summary = "보드 초대", description = "특정 사용자들을 해당 보드에 초대시켜 협업을 할 수 있어야 합니다.")
 }

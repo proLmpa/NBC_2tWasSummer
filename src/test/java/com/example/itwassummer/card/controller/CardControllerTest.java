@@ -63,7 +63,6 @@ public class CardControllerTest {
         .andDo(print());
   }
 
-
   String login() throws Exception {
     // given
     String email = "user@email.com";

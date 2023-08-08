@@ -9,6 +9,7 @@ import java.util.List;
 public interface BoardService {
 
     BoardResponseDto showBoards(Long boardId);
+    List<BoardResponseDto> showAllBoards();
 
     void createBoards(BoardRequestDto requestDto, User user);
 
@@ -16,5 +17,4 @@ public interface BoardService {
 
     void delete(Long id, User user);
 
-    List<BoardResponseDto> showAllBoards();
 }
