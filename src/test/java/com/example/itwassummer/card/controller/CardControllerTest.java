@@ -54,7 +54,7 @@ public class CardControllerTest {
     );
 
     // then
-    mvc.perform(post(BASE_URL + "/")
+    mvc.perform(post(BASE_URL)
             .content(body)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization",header)

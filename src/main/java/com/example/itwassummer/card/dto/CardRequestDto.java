@@ -21,7 +21,7 @@ public class CardRequestDto {
   private String name;
 
   // 만기일
-  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime dueDate;
 
   // 설명

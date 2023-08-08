@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/cards")
+@RequestMapping("/api")
 @Tag(name = "카드 API", description = "카드 기능과 관련된 API 정보를 담고 있습니다.")
 public class CardController {
 
@@ -38,21 +38,21 @@ public class CardController {
   private final CardService cardService;
 
   @Operation(summary = "카드 등록", description = "CardRequestDto를 통해 카드정보를 전달 받은 후 DB에 저장하고 성공 메시지를 반환합니다.")
-  @PostMapping("/")
+  @PostMapping("/cards")
   public ResponseEntity addCards(@Valid @RequestBody CardRequestDto requestDto) throws IllegalAccessException {
     CardResponseDto returnDto = cardService.save(requestDto);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
   }
 
   @Operation(summary = "카드 수정", description = "CardRequestDto를 통해 카드정보를 전달 받은 후 DB에 저장하고 성공 메시지를 반환합니다.")
-  @PutMapping("/")
+  @PutMapping("/cards")
   public ResponseEntity updateCards(@Valid @RequestBody CardRequestDto requestDto) throws IllegalAccessException {
     CardResponseDto returnDto = cardService.update(requestDto);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
   }
 
   @Operation(summary = "카드 삭제", description = "id 값을 통해 삭제")
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/cards/{id}")
   public ResponseEntity<ApiResponseDto> deleteCards(@PathVariable("id") Long id) throws IllegalAccessException {
     cardService.delete(id);
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 가입 성공"));
@@ -62,7 +62,7 @@ public class CardController {
   /**
    * 댓글 목록 조회
    * */
-  @GetMapping("/{cardId}/comments")
+  @GetMapping("/cards/{cardId}/comments")
   @ResponseBody
   public ResponseEntity list(
       @RequestParam("page") int page,
