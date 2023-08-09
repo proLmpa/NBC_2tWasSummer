@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BoardMemberServiceImpl implements BoardMemberService {
     private final UserRepository userRepository;
-//    private final BoardRepository boardRepository;
+    //    private final BoardRepository boardRepository;
     private final BoardMemberRepository boardMemberRepository;
 
     @Override
@@ -25,10 +25,10 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         Board board = findBoard(boardId);
         User invitee = findUser(userId);
 
-        if(matchOwner(board, user) || isAdmin(user)) {
+        if (matchOwner(board, user) || isAdmin(user)) {
             BoardMember boardMember = boardMemberRepository.findByBoardAndUser(board, invitee).orElse(null);
 
-            if(boardMember == null) {
+            if (boardMember == null) {
                 boardMember = new BoardMember(invitee, board);
                 boardMemberRepository.save(boardMember);
             } else {
@@ -46,9 +46,9 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         Board board = findBoard(boardId);
         User invitee = findUser(userId);
 
-        if(matchOwner(board, user) || isAdmin(user)) {
+        if (matchOwner(board, user) || isAdmin(user)) {
             BoardMember boardMember = boardMemberRepository.findByBoardAndUser(board, invitee).orElse(null);
-            if(boardMember != null) {
+            if (boardMember != null) {
                 boardMember.deleteBoardMember(invitee, board);
                 boardMemberRepository.deleteById(boardMember.getId());
             } else {
