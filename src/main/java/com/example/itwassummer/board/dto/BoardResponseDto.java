@@ -26,6 +26,6 @@ public class BoardResponseDto {
         this.name = board.getName();
         this.description = board.getDescription();
         this.color = board.getColor();
-        this.boardCreator = board.getUser().getNickname() + " : " + board.getUser().getEmail();
+        this.boardCreator = board.getUser().getNickname();
     }
 }

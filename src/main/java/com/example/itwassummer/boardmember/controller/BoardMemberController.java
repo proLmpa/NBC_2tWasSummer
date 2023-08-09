@@ -21,14 +21,14 @@ public class BoardMemberController {
     }
 
     @Operation(summary = "보드에 사용자 초대", description = "전달된 Bearer 토큰을 통해 보드 작성자 여부 확인 및 보드와 초대할 사람의 존재 유무 확인 후 전부 충족 시 대상 사용자를 보드에 추가합니다.")
-    @PostMapping("/boards/{boardId}")
+    @PostMapping("/boards/{boardId}/invite")
     public ResponseEntity<ApiResponseDto> inviteBoardMember(@PathVariable Long boardId, @RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         boardMemberService.inviteBoardMember(boardId, userId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "새로운 사용자를 보드에 등록했습니다."));
     }
 
     @Operation(summary = "보드에서 사용자 삭제", description = "전달된 Bearer 토큰을 통해 보드 작성자 여부 확인 및 보드와 삭제할 사람의 존재 유무 확인 후 전부 충족 시 대상 사용자를 보드에서 제거합니다.")
-    @DeleteMapping("/boards/{boardId}")
+    @DeleteMapping("/boards/{boardId}/invite")
     public ResponseEntity<ApiResponseDto> deleteBoardMember(@PathVariable Long boardId, @RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         boardMemberService.deleteBoardMember(boardId, userId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "기존 사용자를 보드에서 삭제했습니다."));
