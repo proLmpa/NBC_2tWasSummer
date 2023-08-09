@@ -1,5 +1,7 @@
 package com.example.itwassummer.label.service;
 
+import com.example.itwassummer.common.error.CustomErrorCode;
+import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.label.dto.LabelCreateRequestDto;
 import com.example.itwassummer.label.dto.LabelEditRequestDto;
 import com.example.itwassummer.label.dto.LabelResponseDto;
@@ -46,9 +48,7 @@ public class LabelServiceImpl implements LabelService {
     @Transactional
     public String editLabel(Long labelId, LabelEditRequestDto requestDto) {
 
-        Label label = labelRepository.findById(labelId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 라벨을 찾을 수 없습니다."));
-
+        Label label = findLabel(labelId);
         label.editLabel(requestDto);
 
         return "라벨 수정 완료.";
@@ -58,11 +58,14 @@ public class LabelServiceImpl implements LabelService {
     @Transactional
     public String deleteLabel(Long labelId) {
 
-        Label label = labelRepository.findById(labelId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 라벨을 찾을 수 없습니다."));
-
+        Label label = findLabel(labelId);
         labelRepository.delete(label);
 
         return "라벨 삭제 완료.";
+    }
+
+    private Label findLabel(Long labelId) {
+        return labelRepository.findById(labelId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.LABEL_NOT_FOUND, null));
     }
 }

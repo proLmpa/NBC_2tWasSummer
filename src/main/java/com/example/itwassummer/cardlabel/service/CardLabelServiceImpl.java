@@ -4,6 +4,8 @@ import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.cardlabel.repository.CardLabelRepository;
+import com.example.itwassummer.common.error.CustomErrorCode;
+import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.label.entity.Label;
 import com.example.itwassummer.label.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +25,9 @@ public class CardLabelServiceImpl implements CardLabelService {
     public String createCardLabel(Long cardId, Long labelId) {
 
         Card card = cardRepository.findById(cardId).orElseThrow(()
-                -> new IllegalArgumentException("해당 카드를 찾을 수 없습니다."));
+                -> new CustomException(CustomErrorCode.CARD_NOT_FOUND, null));
         Label label = labelRepository.findById(labelId).orElseThrow(()
-                -> new IllegalArgumentException("해당 라벨을 찾을 수 없습니다."));
+                -> new CustomException(CustomErrorCode.LABEL_NOT_FOUND, null));
 
         CardLabel cardLabel = new CardLabel(card, label);
         cardLabelRepository.save(cardLabel);
