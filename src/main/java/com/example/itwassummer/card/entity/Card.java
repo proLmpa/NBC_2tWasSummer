@@ -19,8 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "card")
 public class Card {
 
-  ////칼럼들
-
+  //// 컬럼
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "card_id")
@@ -36,35 +35,17 @@ public class Card {
   @Column(length = 100)
   private String description;
 
-  @Column(length = 10, nullable = false)
+  @Column(nullable = false)
   private Long parentId;
-
-/*
-    @Column
-    private String attachment;
-*/
-
-  ////연관관계
-
-  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Comment> comments = new ArrayList<>();
-
-   /*
-   @ManyToOne
-    @JoinColumn(name = "deck_id")
-    private Deck deck;
-
-    Deck 엔티티에 추가
-    @OneToMany(mappedBy = "deck", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Card> cards = new ArrayList<>();
-
-    */
 
   @Column
   private String attachment;
 
-  ////생성자
+  //// 연관관계
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
+  //// 생성자
   @Builder
   public Card(CardRequestDto requestDto) {
     this.name = requestDto.getName();

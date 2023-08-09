@@ -1,4 +1,4 @@
-package com.example.itwassummer.cardnotifications.dto;
+package com.example.itwassummer.cardnotification.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardNotificationsResponseDto {
+public class CardNotificationResponseDto {
     boolean isRead;
 
     boolean isWatched;

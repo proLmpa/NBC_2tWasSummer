@@ -3,7 +3,7 @@ package com.example.itwassummer.card.service;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.entity.Card;
-import com.example.itwassummer.cardmembers.dto.CardMembersResponseDto;
+import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +49,7 @@ public interface CardService {
    * @param emailList 이메일 목록
    * @return
    */
-  List<CardMembersResponseDto> changeCardMembers(Long cardId, String emailList);
+  List<CardMemberResponseDto> changeCardMembers(Long cardId, String emailList);
 
   /**
    * 카드 마감일 수정

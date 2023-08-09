@@ -1,10 +1,7 @@
 package com.example.itwassummer.card.dto;
 
-import com.example.itwassummer.common.file.S3FileDto;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardRequestDto {
-
 
   // 카드 이름
   @NotBlank
@@ -37,6 +33,4 @@ public class CardRequestDto {
   @Setter
   private String attachment;
 
-  // 덱 id (외래키)
-  private Long deckId;
 }

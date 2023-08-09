@@ -1,4 +1,4 @@
-package com.example.itwassummer.cardmembers.dto;
+package com.example.itwassummer.cardmember.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardMembersResponseDto {
+public class CardMemberResponseDto {
   // 사용자 이메일
-  private String UserEmail;
+  private String userEmail;
 
   // 사용자 닉네임
-  private String Nickname;
+  private String nickName;
 
   // 카드 이름
-  private String CardName;
+  private String cardName;
 
 }

@@ -1,4 +1,4 @@
-package com.example.itwassummer.cardmembers.entity;
+package com.example.itwassummer.cardnotification.entity;
 
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.user.entity.User;
@@ -11,13 +11,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.NoArgsConstructor;
 
-// 카드별 담당자
+// 카드별 알림
 @Entity
 @NoArgsConstructor
-public class CardMembers {
+public class CardNotification {
+
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+
+  boolean isRead;
+
+  boolean isWatched;
 
   @ManyToOne(fetch = FetchType.LAZY)
   private User users;
@@ -25,8 +32,9 @@ public class CardMembers {
   @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   private Card cards;
 
-  public CardMembers(Card cards, User users) {
+  public CardNotification(Card cards, User users) {
     this.cards = cards;
     this.users = users;
   }
+
 }
