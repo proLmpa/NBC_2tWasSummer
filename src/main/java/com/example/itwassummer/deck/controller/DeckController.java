@@ -21,8 +21,8 @@ public class DeckController {
 	@Operation(summary = "Deck 생성", description = "boardId에 맞는 Board에 Deck을 생성하고 DeckResponseDto를 반환합니다.")
 	@PostMapping("/decks")
 	public ResponseEntity<DeckResponseDto> createDeck(@RequestParam Long boardId,
-													  @RequestBody DeckRequestDto requestDto) {
-		DeckResponseDto responseDto = deckService.createDeck(boardId, requestDto);
+													  @RequestParam String name) {
+		DeckResponseDto responseDto = deckService.createDeck(boardId, name);
 		return ResponseEntity.ok().body(responseDto);
 	}
 
