@@ -1,16 +1,18 @@
 package com.example.itwassummer.deck.service;
 
 import com.example.itwassummer.board.entity.Board;
-import com.example.itwassummer.deck.dto.DeckRequestDto;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 import com.example.itwassummer.deck.entity.Deck;
 import com.example.itwassummer.deck.repository.BoardRepository;
 import com.example.itwassummer.deck.repository.DeckRepository;
+import com.querydsl.core.Tuple;
+import io.swagger.v3.oas.models.links.Link;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -20,36 +22,14 @@ public class DeckServiceImpl implements DeckService {
 	private final BoardRepository boardRepository;
 
 	@Transactional
-	public DeckResponseDto createDeck(Long boardId, DeckRequestDto requestDto) {
+	public DeckResponseDto createDeck(Long boardId, String name) {
 		Board board = findBoard(boardId);
-		String name = requestDto.getName();
+		List<Deck> deckList = deckRepository.findAllDecks();
+		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
 		Deck deck = new Deck(name, board);
-
-		List<Deck> decks = deckRepository.findAll();
-		if(decks.size()==0){
-			deckRepository.save(deck);
-			return new DeckResponseDto(deck);
-		}
-
-		if (requestDto.getParentId() == 0) {
-
-			Deck firstDeck = deckRepository.findByParentNull(); // parent가 null값인 애 찾기
-			firstDeck.updateParent(deck);
-
-		} else {
-
-			Deck parentDeck = findDeck(requestDto.getParentId());
-
-			// 마지막 거 넣었을 때 null값 들어오는지 확인
-			Deck afterDeck = deckRepository.findByParent(parentDeck);
-			deck.updateParent(parentDeck);
-
-			if (afterDeck != null) {
-				afterDeck.updateParent(parentDeck);
-			}
-
-		}
+		deck.updateParent(deckLinkedList.getLast());
 		deckRepository.save(deck);
+
 		return new DeckResponseDto(deck);
 	}
 
@@ -64,5 +44,23 @@ public class DeckServiceImpl implements DeckService {
 
 	private Deck findDeck(Long id) {
 		return deckRepository.findById(id).orElse(null);
+	}
+
+	private LinkedList<Deck> connectDecks(List<Deck> deckList) {
+		LinkedList<Deck> deckLinkedList = new LinkedList<>();
+		deckLinkedList.add(deckList.get(0));
+		if (deckList.size() == 1) {
+			return deckLinkedList;
+		}
+
+		for (int i = 1; i <= deckList.size() - 1; i++) {
+			for (int j = 1; j < deckList.size(); j++) {
+				if (deckList.get(j).getParent().getId().equals(deckLinkedList.getLast().getId())) {
+					deckLinkedList.add(deckList.get(j));
+					break;
+				}
+			}
+		}
+		return deckLinkedList;
 	}
 }
