@@ -7,6 +7,8 @@ import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.cardmember.repository.CardMemberRepository;
+import com.example.itwassummer.common.error.CustomErrorCode;
+import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.common.file.FileUploader;
 import com.example.itwassummer.common.file.S3FileDto;
 import com.example.itwassummer.user.entity.User;
@@ -140,7 +142,7 @@ public class CardServiceImpl implements CardService {
 
   public Card findCard(Long cardId) {
     return cardRepository.findById(cardId).orElseThrow(() ->
-        new NullPointerException("카드가 없습니다."));
+     new CustomException(CustomErrorCode.CARD_NOT_FOUND, null));
   }
 
   @Override
