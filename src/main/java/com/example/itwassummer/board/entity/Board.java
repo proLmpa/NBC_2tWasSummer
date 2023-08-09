@@ -1,6 +1,7 @@
 package com.example.itwassummer.board.entity;
 
 import com.example.itwassummer.board.dto.BoardRequestDto;
+import com.example.itwassummer.boardmember.entity.BoardMember;
 import com.example.itwassummer.deck.entity.Deck;
 import com.example.itwassummer.user.entity.User;
 import jakarta.persistence.*;
@@ -24,7 +25,7 @@ public class Board {
 
     // 보드 이름
     @Column(nullable = false)
-    private String board_name;
+    private String name;
 
     // 설명
     @Column
@@ -45,12 +46,18 @@ public class Board {
 
     // 보드 사용자 목록
     @OneToMany(mappedBy = "board")
-    private List<BoardMembers> boardMembersList = new ArrayList<>();
+    private List<BoardMember> boardMembers = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
-        this.board_name = requestDto.getBoard_name();
+        this.name = requestDto.getName();
         this.description = requestDto.getDescription();
         this.color = requestDto.getColor();
         this.user = user;
+    }
+
+    public void updateBoard(String name, String description, String color) {
+        this.name = name;
+        this.description = description;
+        this.color = color;
     }
 }
