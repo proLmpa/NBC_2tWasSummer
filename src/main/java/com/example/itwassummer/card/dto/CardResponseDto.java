@@ -25,10 +25,7 @@ public class CardResponseDto {
   // 정렬순서
   private Long parentId;
 
-  // 첨부파일
-  private String attachment;
-
   //첨부파일 정보 표시하는 리스트
-  private List<S3FileDto> attachInfoList = null;
+  private List<S3FileDto> attachment = null;
 
 }

@@ -5,6 +5,7 @@ import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.common.file.S3FileDto;
 import com.example.itwassummer.deck.entity.Deck;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Getter
@@ -38,9 +40,14 @@ public class Card {
 
   @Column(nullable = false)
   private Long parentId;
-
+/*
   @Column
-  private String attachment;
+  private String attachment;*/
+
+  @Convert(converter = S3FileDto.S3FileDtoConverter.class)
+  @Type(JsonType.class)
+  @Column(name="attachment",columnDefinition = "json")
+  private List<S3FileDto> attachment;
 
   //// 연관관계
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
