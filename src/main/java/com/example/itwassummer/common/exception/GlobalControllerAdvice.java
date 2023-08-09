@@ -29,4 +29,10 @@ public class GlobalControllerAdvice {
 
         return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), errorMessage.toString()));
     }
+
+    @ExceptionHandler({NullPointerException.class})
+    public ResponseEntity<ApiResponseDto> nullPointerExceptionHandler(NullPointerException ex) {
+        ApiResponseDto restApiException = new ApiResponseDto(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+         return ResponseEntity.badRequest().body(restApiException);
+    }
 }
