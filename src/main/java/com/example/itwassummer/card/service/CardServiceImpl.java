@@ -196,7 +196,7 @@ public class CardServiceImpl implements CardService {
         .name(card.getName())
         .dueDate(String.valueOf(card.getDueDate()))
         .description(card.getDescription())
-        .parentId(card.getParentId())
+        .parentId(order)
         .build();
     return responseDto;
   }
