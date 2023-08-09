@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,53 +19,36 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
-    // 단일 보드 조회
     @Override
+    @Transactional(readOnly = true)
     public BoardResponseDto showBoards(Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(()
-                -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
+        Board board = findBoard(id);
         return new BoardResponseDto(board);
     }
 
-    // 보드 목록 조회
     @Override
+    @Transactional(readOnly = true)
     public List<BoardResponseDto> showAllBoards() {
         List<Board> boardList = boardRepository.findAll();
-
-        List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
-
-        for (Board board : boardList) {
-            boardResponseDtoList.add(new BoardResponseDto(board));
-        }
-        return null;
+        return boardList.stream().map(BoardResponseDto::new).toList();
     }
 
     @Override
-    public void createBoards(BoardRequestDto requestDto, User user) {
-        if (requestDto.getBoard_name().isEmpty()) {
-            throw new CustomException(CustomErrorCode.BOARD_NAME_ISNULL, null);
-        }
+    @Transactional
+    public BoardResponseDto createBoards(BoardRequestDto requestDto, User user) {
         Board board = new Board(requestDto, user);
         boardRepository.save(board);
+
+        return new BoardResponseDto(board);
     }
 
-    /*
-    보드 수정 - 보드 이름 / 배경 색상 / 설명 변경 가능
-     */
     @Override
     @Transactional
     public BoardResponseDto update(Long id, BoardRequestDto requestDto, User user) {
-        Board board = confirmUser(id, user);
+        Board board = findBoard(id);
+        confirmUser(board, user);
 
-        if (!requestDto.getBoard_name().isEmpty()) {
-            board.setBoard_name(requestDto.getBoard_name());
-        }
-        if (!requestDto.getDescription().isEmpty()) {
-            board.setDescription(requestDto.getDescription());
-        }
-        if (!requestDto.getColor().isEmpty()) {
-            board.setColor(requestDto.getColor());
-        }
+        board.updateBoard(requestDto.getName(), requestDto.getDescription(), requestDto.getColor());
 
         return new BoardResponseDto(board);
     }
@@ -74,24 +56,20 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void delete(Long id, User user) {
-        Board board = confirmUser(id, user);
-        boardRepository.delete(board);
+        Board board = findBoard(id);
+        confirmUser(board, user);
+
+        boardRepository.deleteById(id);
     }
 
-    // 보드 수정, 삭제 시 유저 권한 확인 메서드
-    private Board confirmUser(Long id, User user) {
-        // 글 가져오기
-        Board board = boardRepository.findById(id).orElseThrow(()
+    private Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(()
                 -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
+    }
 
-        if (user.getRole() == UserRoleEnum.USER) { // 일반 회원
-            if (board.getUser().getId() == user.getId()) { // 작성자 검증
-                return board;
-            } else {
-                throw new CustomException(CustomErrorCode.BOARD_NAME_ISNULL, null);
-            }
-        } else { // 관리자 회원
-            return board;
-        }
+    private void confirmUser(Board board, User user) {
+        if(!board.getUser().getId().equals(user.getId())
+                && !user.getRole().equals(UserRoleEnum.ADMIN))
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUEST, null);
     }
 }
