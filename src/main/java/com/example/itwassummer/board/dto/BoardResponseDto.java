@@ -1,25 +1,31 @@
 package com.example.itwassummer.board.dto;
 
 import com.example.itwassummer.board.entity.Board;
-import com.example.itwassummer.user.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardResponseDto {
-    // 보드 이름
-    private String board_name;
+    private Long boardId;
 
-    // 설명
+    private String name;
+
     private String description;
 
-    // 색상 코드 문자열 형태로 저장
     private String color;
 
-    // 보드를 만든 사용자
-    private User user;
+    private String boardCreator;
 
     public BoardResponseDto(Board board) {
-        this.board_name = board.getBoard_name();
+        this.boardId = board.getId();
+        this.name = board.getName();
         this.description = board.getDescription();
         this.color = board.getColor();
-        this.user = board.getUser();
+        this.boardCreator = board.getUser().getNickname() + " : " + board.getUser().getEmail();
     }
 }
