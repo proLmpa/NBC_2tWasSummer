@@ -1,12 +1,11 @@
 package com.example.itwassummer.card.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import com.example.itwassummer.common.file.S3FileDto;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 @Builder
@@ -25,5 +24,8 @@ public class CardResponseDto {
 
   // 정렬순서
   private Long parentId;
+
+  //첨부파일 정보 표시하는 리스트
+  private List<S3FileDto> attachment = null;
 
 }
