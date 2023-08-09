@@ -1,16 +1,16 @@
 package com.example.itwassummer.card.entity;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
+import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.comment.entity.Comment;
-import com.example.itwassummer.deck.entity.Deck;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,6 +44,9 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "card")
+    private List<CardLabel> cardLabels = new ArrayList<>();
+
    /*
    @ManyToOne
     @JoinColumn(name = "deck_id")
@@ -59,7 +62,7 @@ public class Card {
     ////생성자
 
     @Builder
-    public Card(String name, LocalDateTime dueDate, String description, Long parentId){
+    public Card(String name, LocalDateTime dueDate, String description, Long parentId) {
         this.name = name;
         this.dueDate = dueDate;
         this.description = description;
