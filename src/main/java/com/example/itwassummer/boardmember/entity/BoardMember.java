@@ -29,4 +29,9 @@ public class BoardMember {
         user.getBoardMembers().add(this);
         // board.getBoardMembers().add(this);
     }
+
+    public void deleteBoardMember(User user, Board board) {
+        user.getBoardMembers().remove(this);
+//        board.getBoardMembers().remove(this);
+    }
 }
