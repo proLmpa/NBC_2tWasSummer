@@ -107,7 +107,6 @@ public class CardController {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-
   @Operation(summary = "댓글 목록 조회", description = "id 값을 통해 삭제")
   @GetMapping("/cards/{cardId}/comments")
   @ResponseBody
