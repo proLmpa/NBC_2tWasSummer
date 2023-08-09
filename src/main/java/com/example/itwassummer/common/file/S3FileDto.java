@@ -1,6 +1,7 @@
 package com.example.itwassummer.common.file;
 
 
+import com.example.itwassummer.common.util.JsonConverter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +19,5 @@ public class S3FileDto {
   private String uploadFilePath;
   private String uploadFileUrl;
 
+  public static class S3FileDtoConverter extends JsonConverter<S3FileDto> {}
 }

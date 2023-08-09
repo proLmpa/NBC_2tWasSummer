@@ -47,17 +47,9 @@ public class CardServiceImpl implements CardService {
 
     // 파일 등록
     List<S3FileDto> fileDtoList = null;
-    String attachmentList = "";
     if (!(files == null || (files.size() == 1 && files.get(0).isEmpty()))) {
       fileDtoList = fileUploader.uploadFiles(files, "files");
-      for (int i = 0; i < fileDtoList.size(); i++) {
-        if (i == fileDtoList.size() - 1) {
-          attachmentList += fileDtoList.get(i).getUploadFileUrl();
-        } else {
-          attachmentList += (fileDtoList.get(i).getUploadFileUrl() + "|");
-        }
-      }
-      requestDto.setAttachment(attachmentList);
+      requestDto.setAttachment(fileDtoList);
     }
 
     Card card = Card.builder()
@@ -69,7 +61,7 @@ public class CardServiceImpl implements CardService {
         .name(returnCard.getName())
         .dueDate(String.valueOf(returnCard.getDueDate()))
         .description(returnCard.getDescription())
-        .attachInfoList(fileDtoList)
+        .attachment(fileDtoList)
         .parentId(card.getParentId())
         .build();
     return responseDto;
@@ -81,42 +73,23 @@ public class CardServiceImpl implements CardService {
       throws IOException {
     // 파일첨부
     List<S3FileDto> fileDtoList = null;
-    String attachmentList = "";
     Card card = findCard(cardId);
 
-    // 추후에 S3FileDto 객체를 활용해 등록시 text타입으로 데이터를넣어두고
-    // db에서 S3FileDto 객체로 parse 해서 삭제기능을 구현하도록 개선 필요
-    String attachUrls = card.getAttachment();
-    if (attachUrls != null && !attachUrls.isEmpty()) {
-      String[] attachUrlArray = attachUrls.split("\\|");
-      if (attachUrlArray.length > 0) {
-        for (int i = 0; i < attachUrlArray.length; i++) {
-          String temp = attachUrlArray[i];
-          String temp2 = temp.replace("https://" + bucketName + ".s3.ap-northeast-2.amazonaws.com/",
-              "");
-          String[] temp3 = temp2.split("/");
-          String uploadPath = "";
-          String uploadFileName = "";
-          if (temp3.length > 4) {
-            uploadPath = temp3[0] + "/" + temp3[1] + "/" + temp3[2] + "/" + temp3[3];
-            uploadFileName = temp3[4];
-            fileUploader.deleteFile(uploadPath, uploadFileName);
-          }
-        }
+    // 파일정보 불러오기
+    List<S3FileDto> attachment = card.getAttachment();
+
+    // 기존 파일 삭제
+    if (attachment != null && attachment.size() > 0) {
+      for (int i = 0; i < attachment.size(); i++) {
+        fileUploader.deleteFile(attachment.get(i).getUploadFilePath(),
+            attachment.get(i).getUploadFileName());
       }
     }
 
     // 파일 등록 
     if (!(files == null || (files.size() == 1 && files.get(0).isEmpty()))) {
       fileDtoList = fileUploader.uploadFiles(files, "files");
-      for (int i = 0; i < fileDtoList.size(); i++) {
-        if (i == fileDtoList.size() - 1) {
-          attachmentList += fileDtoList.get(i).getUploadFileUrl();
-        } else {
-          attachmentList += (fileDtoList.get(i).getUploadFileUrl() + "|");
-        }
-      }
-      requestDto.setAttachment(attachmentList);
+      requestDto.setAttachment(fileDtoList);
     }
 
     // card 내용 수정
@@ -126,7 +99,7 @@ public class CardServiceImpl implements CardService {
         .name(card.getName())
         .dueDate(String.valueOf(card.getDueDate()))
         .description(card.getDescription())
-        .attachInfoList(fileDtoList)
+        .attachment(fileDtoList)
         .parentId(card.getParentId())
         .build();
 
@@ -137,12 +110,24 @@ public class CardServiceImpl implements CardService {
   @Transactional
   public void delete(Long cardId) {
     Card card = findCard(cardId);
+
+    // 파일정보 불러오기
+    List<S3FileDto> attachment = card.getAttachment();
+
+    // 기존 파일 삭제
+    if (attachment != null && attachment.size() > 0) {
+      for (int i = 0; i < attachment.size(); i++) {
+        fileUploader.deleteFile(attachment.get(i).getUploadFilePath(),
+            attachment.get(i).getUploadFileName());
+      }
+    }
+
     cardRepository.deleteById(card.getId());
   }
 
   public Card findCard(Long cardId) {
     return cardRepository.findById(cardId).orElseThrow(() ->
-     new CustomException(CustomErrorCode.CARD_NOT_FOUND, null));
+        new CustomException(CustomErrorCode.CARD_NOT_FOUND, null));
   }
 
   @Override
