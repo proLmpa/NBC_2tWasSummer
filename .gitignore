@@ -2,6 +2,7 @@ HELP.md
 .gradle
 application-ds.properties
 application-key.properties
+application-s3.properties
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
