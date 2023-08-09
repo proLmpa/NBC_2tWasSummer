@@ -6,12 +6,14 @@ import com.example.itwassummer.comment.dto.CommentCreateRequestDto;
 import com.example.itwassummer.comment.dto.CommentEditRequestDto;
 import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.comment.repository.CommentRepository;
+import com.example.itwassummer.common.error.CustomErrorCode;
+import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service //issue @Service 어노테이션을 여기에?
+@Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -19,11 +21,11 @@ public class CommentServiceImpl implements CommentService {
     private final CardRepository cardRepository;
 
     @Override
+    @Transactional
     public String createComment(Long cardId, CommentCreateRequestDto requestDto, User user) {
 
         Comment comment = new Comment(requestDto);
-        Card card = cardRepository.findById(cardId).orElseThrow(()
-                -> new IllegalArgumentException("존재하지 않는 카드입니다."));
+        Card card = findCard(cardId);
         comment.addCard(card);
         comment.addUser(user);
         commentRepository.save(comment);
@@ -36,8 +38,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public String editComment(Long commentId, CommentEditRequestDto requestDto, User user) {
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()
-                -> new IllegalArgumentException("존재하지 않는 코멘트입니다."));
+        Comment comment = findComment(commentId);
 
         checkUser(comment.getUser(), user);
         comment.editComment(requestDto);
@@ -46,10 +47,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public String deleteComment(Long commentId, User user) {
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()
-                -> new IllegalArgumentException("존재하지 않는 코멘트입니다."));
+        Comment comment = findComment(commentId);
 
         checkUser(comment.getUser(), user);
         commentRepository.delete(comment);
@@ -62,4 +63,16 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalArgumentException("본인의 코멘트만 삭제할 수 있습니다.");
         }
     }
+
+    private Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(()
+                -> new CustomException(CustomErrorCode.COMMENT_NOT_FOUND, null));
+    }
+
+    private Card findCard(Long cardId) {
+        return cardRepository.findById(cardId).orElseThrow(()
+                -> new CustomException(CustomErrorCode.CARD_NOT_FOUND, null));
+    }
+
+
 }

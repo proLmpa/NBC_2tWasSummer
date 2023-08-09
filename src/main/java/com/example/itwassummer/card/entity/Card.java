@@ -1,17 +1,18 @@
 package com.example.itwassummer.card.entity;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
+import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.common.file.S3FileDto;
 import com.example.itwassummer.deck.entity.Deck;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,6 +45,10 @@ public class Card {
   //// 연관관계
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
+ 
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CardLabel> cardLabels = new ArrayList<>();
+  
 
   //// 생성자
   @Builder
@@ -67,5 +72,4 @@ public class Card {
   public void updateDueDate(LocalDateTime dueDate) {
     this.dueDate = dueDate;
   }
-
 }
