@@ -3,13 +3,13 @@ package com.example.itwassummer.boardmember.entity;
 import com.example.itwassummer.board.entity.Board;
 import com.example.itwassummer.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@Table(name = "board")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +26,5 @@ public class BoardMember {
     public BoardMember(User user, Board board) {
         this.user = user;
         this.board = board;
-        user.getBoardMembers().add(this);
-        // board.getBoardMembers().add(this);
-    }
-
-    public void deleteBoardMember(User user, Board board) {
-        user.getBoardMembers().remove(this);
-//        board.getBoardMembers().remove(this);
     }
 }
