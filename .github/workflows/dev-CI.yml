@@ -1,0 +1,59 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: develop CI check
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: 레포지토리 체크아웃
+        uses: actions/checkout@v3
+
+      - name: JDK 17 설치
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      # gradle 실행 허가
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      # build Test
+      - name: Build with Gradle
+        run: ./gradlew clean build --exclude-task test # 테스트 코드 없을때
+
+      # PR conversation & Action에 몇 개의 테스트 중에 몇 개가 통과 되었는지
+      # 어떤 테스트 파일에서 실패했는지 가르쳐 줌.
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/build/test-results/**/*.xml
+
+      # 테스트 파일 내에서 어디에서 테스트가 실패되었는지 가르쳐 줌.
+      # Files changed에서 어디에서 잘못되었는지 가르쳐준다.
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
