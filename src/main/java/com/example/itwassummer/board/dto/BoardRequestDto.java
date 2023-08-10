@@ -1,18 +1,22 @@
 package com.example.itwassummer.board.dto;
 
-import com.example.itwassummer.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardRequestDto {
-    // 보드 이름
     @NotBlank
-    private String board_name;
+    private String name;
 
-    // 설명
+    @NotBlank
     private String description;
 
-    // 색상 코드 문자열 형태로 저장
+    @NotBlank
     private String color; // default 지정?
 }

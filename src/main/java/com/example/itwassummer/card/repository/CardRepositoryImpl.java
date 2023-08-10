@@ -1,13 +1,11 @@
 package com.example.itwassummer.card.repository;
 
 import com.example.itwassummer.card.entity.Card;
-
-import static com.example.itwassummer.card.entity.QCard.card;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import static com.example.itwassummer.card.entity.QCard.card;
 
 // 커스텀 레포지토리
 @RequiredArgsConstructor

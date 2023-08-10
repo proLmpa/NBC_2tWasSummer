@@ -1,5 +1,7 @@
 package com.example.itwassummer.user.service;
 
+import com.example.itwassummer.board.repository.BoardRepository;
+import com.example.itwassummer.boardmember.repository.BoardMemberRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.user.dto.EditUserRequestDto;
@@ -10,6 +12,7 @@ import com.example.itwassummer.user.repository.UserRepository;
 import com.example.itwassummer.userpassword.dto.EditPasswordRequestDto;
 import com.example.itwassummer.userpassword.entity.UserPassword;
 import com.example.itwassummer.userpassword.repository.UserPasswordRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,16 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserPasswordRepository userPasswordRepository;
+    private final BoardRepository boardRepository;
+    private final BoardMemberRepository boardMemberRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserRepository userRepository, UserPasswordRepository userPasswordRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.userPasswordRepository = userPasswordRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Value("${admin.token}")
     private String adminToken;
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User editUserInfo(EditUserRequestDto requestDto, User user) {
-        User found = findUserByEmail(user.getEmail());
+        User found = findUser(user.getId());
         if (found == null)
             throw new CustomException(CustomErrorCode.USER_NOT_FOUND, null);
 
@@ -63,14 +63,18 @@ public class UserServiceImpl implements UserService {
         return found;
     }
 
+    @Transactional
     @Override
     public void deleteUserInfo(Long userId, User user) {
         User found = findUser(userId);
 
-        if (!matchOwner(found, user) && !isAdmin(user)) {
-            throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUEST, null);
-        }
+        confirmUser(found, user);
 
+        boardRepository.findAllByUser_Id(found.getId()).forEach(
+                board -> boardMemberRepository.deleteAllByBoard_Id(board.getId())
+        );
+        boardRepository.deleteAllByUser_Id(found.getId());
+        userPasswordRepository.deleteAllByUser_Id(found.getId());
         userRepository.deleteById(found.getId());
     }
 
@@ -79,24 +83,13 @@ public class UserServiceImpl implements UserService {
     public void editUserPassword(EditPasswordRequestDto requestDto, User user) {
         User found = findUser(user.getId());
 
-        if (passwordEncoder.matches(requestDto.getPassword(), found.getPassword())) {
-            if (requestDto.getNewPassword1().equals(requestDto.getNewPassword2())) {
-                List<UserPassword> userPasswords = userPasswordRepository.get3RecentPasswords(found.getId());
-                for (UserPassword password : userPasswords) {
-                    if (passwordEncoder.matches(requestDto.getNewPassword2(), password.getPassword())) {
-                        throw new CustomException(CustomErrorCode.PASSWORD_RECENTLY_USED, null);
-                    }
-                }
+        checkPassword(requestDto.getPassword(), found.getPassword());
+        checkNewPassword(requestDto.getNewPassword1(), requestDto.getNewPassword2());
+        checkRecentPasswords(found.getId(), requestDto.getNewPassword1());
 
-                String newPassword = passwordEncoder.encode(requestDto.getNewPassword1());
-                userPasswordRepository.save(new UserPassword(newPassword, found));
-                found.editPassword(newPassword);
-            } else {
-                throw new CustomException(CustomErrorCode.NEW_PASSWORD_MISMATCHED, null);
-            }
-        } else {
-            throw new CustomException(CustomErrorCode.OLD_PASSWORD_MISMATCHED, null);
-        }
+        String newPassword = passwordEncoder.encode(requestDto.getNewPassword1());
+        userPasswordRepository.save(new UserPassword(newPassword, found));
+        found.editPassword(newPassword);
     }
 
     private User findUserByEmail(String email) {
@@ -108,11 +101,28 @@ public class UserServiceImpl implements UserService {
                 () -> new CustomException(CustomErrorCode.USER_NOT_FOUND, null));
     }
 
-    private boolean matchOwner(User user1, User user2) {
-        return user1.getId().equals(user2.getId());
+    private void confirmUser(User user1, User user2) {
+        if(!user1.getId().equals(user2.getId()) && user2.getRole() != UserRoleEnum.ADMIN)
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUEST, null);
     }
 
-    private boolean isAdmin(User user) {
-        return user.getRole() == UserRoleEnum.ADMIN;
+    private void checkPassword(String inputPassword, String userPassword) {
+        if (!passwordEncoder.matches(inputPassword, userPassword)) {
+            throw new CustomException(CustomErrorCode.OLD_PASSWORD_MISMATCHED, null);
+        }
+    }
+
+    private void checkNewPassword(String newPassword1, String newPassword2) {
+        if(!newPassword1.equals(newPassword2)) {
+            throw new CustomException(CustomErrorCode.NEW_PASSWORD_MISMATCHED, null);
+        }
+    }
+
+    private void checkRecentPasswords(Long userId, String newPassword) {
+        List<UserPassword> userPasswords = userPasswordRepository.get3RecentPasswords(userId);
+        userPasswords.forEach(password -> {
+            if (passwordEncoder.matches(newPassword, password.getPassword()))
+                throw new CustomException(CustomErrorCode.PASSWORD_RECENTLY_USED, null);
+        });
     }
 }
