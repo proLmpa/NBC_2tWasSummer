@@ -1,5 +1,7 @@
 package com.example.itwassummer.user.service;
 
+import com.example.itwassummer.board.repository.BoardRepository;
+import com.example.itwassummer.boardmember.repository.BoardMemberRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.user.dto.EditUserRequestDto;
@@ -23,6 +25,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserPasswordRepository userPasswordRepository;
+    private final BoardRepository boardRepository;
+    private final BoardMemberRepository boardMemberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${admin.token}")
@@ -66,6 +70,11 @@ public class UserServiceImpl implements UserService {
 
         confirmUser(found, user);
 
+        boardRepository.findAllByUser_Id(found.getId()).forEach(
+                board -> boardMemberRepository.deleteAllByBoard_Id(board.getId())
+        );
+        boardRepository.deleteAllByUser_Id(found.getId());
+        userPasswordRepository.deleteAllByUser_Id(found.getId());
         userRepository.deleteById(found.getId());
     }
 
