@@ -13,8 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
 @Service
@@ -159,14 +161,19 @@ public class DeckServiceImpl implements DeckService {
 			return deckLinkedList;
 		}
 
+		Map<Long, Deck> deckMap = new HashMap<>();
+		for (Deck deck : deckList) {
+			Long parentId = deck.getParent() == null ? null : deck.getParent().getId();
+			deckMap.put(parentId, deck);
+		}
+
 		for (int i = 1; i <= deckList.size() - 1; i++) {
-			for (int j = 1; j < deckList.size(); j++) {
-				if (deckList.get(j).getParent().getId().equals(deckLinkedList.getLast().getId())) {
-					deckLinkedList.add(deckList.get(j));
-					break;
-				}
+			Long lastId = deckLinkedList.getLast().getId();
+			if (deckMap.containsKey(lastId)) {
+				deckLinkedList.add(deckMap.get(lastId));
 			}
 		}
+
 		return deckLinkedList;
 	}
 
