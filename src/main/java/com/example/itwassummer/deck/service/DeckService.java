@@ -1,5 +1,6 @@
 package com.example.itwassummer.deck.service;
 
+import com.example.itwassummer.deck.dto.DeckMoveRequestDto;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 
 import java.util.List;
@@ -25,7 +26,11 @@ public interface DeckService {
 
 	/*
 		@param deckId, name(덱 이름 수정 요청 정보)
-		@return void
 	 */
 	void updateDeckName(Long deckId, String name);
+
+	/*
+		@param deckId, requestDto (덱 위치 수정 요청 정보)
+	 */
+	void moveDeck(Long deckId, DeckMoveRequestDto requestDto);
 }

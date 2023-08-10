@@ -1,7 +1,7 @@
 package com.example.itwassummer.deck.controller;
 
 import com.example.itwassummer.common.dto.ApiResponseDto;
-import com.example.itwassummer.deck.dto.DeckRequestDto;
+import com.example.itwassummer.deck.dto.DeckMoveRequestDto;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 import com.example.itwassummer.deck.service.DeckServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,16 +51,17 @@ public class DeckController {
 	@PatchMapping("/decks/{deckId}/name")
 	public ResponseEntity<ApiResponseDto> updateDeckName(@PathVariable Long deckId,
 														 @RequestParam String name) {
-		deckService.updateDeckName(deckId,name);
-		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(),"Deck 이름 수정 완료"));
+		deckService.updateDeckName(deckId, name);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 이름 수정 완료"));
 	}
 
 	// 덱 위치 변경
 	@Operation(summary = "Deck 위치 변경", description = "deckId에 맞는 Deck을 조회하여 위치를 수정합니다.")
-	@PatchMapping("/decks/{deckId}/move")
+	@PatchMapping("/decks/{deckId}/position")
 	public ResponseEntity<ApiResponseDto> moveDeck(@PathVariable Long deckId,
-												   @RequestParam Long parentId) {
-		return null;
+												   @RequestBody DeckMoveRequestDto requestDto) {
+		deckService.moveDeck(deckId, requestDto);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 이동 완료"));
 	}
 
 	// 덱 삭제(논리적 삭제)
