@@ -39,9 +39,9 @@ public class DeckController {
 	// 덱 단일 조회
 	@Operation(summary = "Deck 단일 조회", description = "deckId에 맞는 Deck을 조회하여 DeckResponseDto로 반환합니다.")
 	@GetMapping("/decks/{deckId}")
-	public ResponseEntity<DeckResponseDto> getDeck() {
-		return null;
-		// isDeleted 아닌 애들, 순서대로 정렬해서.
+	public ResponseEntity<DeckResponseDto> getDeck(@PathVariable Long deckId) {
+		DeckResponseDto responseDto = deckService.getDeck(deckId);
+		return ResponseEntity.ok().body(responseDto);
 	}
 
 

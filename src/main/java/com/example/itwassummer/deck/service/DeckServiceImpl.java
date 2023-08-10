@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,18 @@ public class DeckServiceImpl implements DeckService {
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
 		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
 		return deckLinkedList.stream().map(DeckResponseDto::new).toList();
+	}
+
+	@Override
+	public DeckResponseDto getDeck(Long deckId) {
+		Deck deck = findDeck(deckId);
+		if (deck == null) {
+			throw new EntityNotFoundException("선택한 Deck은 존재하지 않습니다.");
+		}
+		if (deck.getIsDeleted()) {
+			throw new RejectedExecutionException("선택한 Deck은 삭제되었습니다.");
+		}
+		return new DeckResponseDto(deck);
 	}
 
 

@@ -16,4 +16,10 @@ public interface DeckService {
 		@return List<DeckResponseDto>(모든 덱 조회)
 	 */
 	List<DeckResponseDto> getAllDecks(Long boardId);
+
+	/*
+		@param deckId(덱 조회 요청 정보)
+		@return DeckResponseDto(개별 덱 조회)
+	 */
+	DeckResponseDto getDeck(Long deckId);
 }
