@@ -20,7 +20,7 @@ public interface LabelService {
      * @param requestDto 라벨 생성에 필요한 정보. title, color코드
      * @param boardId    라벨이 생성될 보드의 Id
      */
-    void createLabel(LabelRequestDto requestDto, Long boardId);
+    LabelResponseDto createLabel(LabelRequestDto requestDto, Long boardId);
 
     /**
      * 해당 라벨의 정보를 수정.
@@ -28,7 +28,7 @@ public interface LabelService {
      * @param labelId    라벨의 Id값
      * @param requestDto 라벨의 수정하고자 하는 정보.
      */
-    void editLabel(Long labelId, LabelRequestDto requestDto);
+    LabelResponseDto editLabel(Long labelId, LabelRequestDto requestDto);
 
     /**
      * 해당 라벨을 삭제.

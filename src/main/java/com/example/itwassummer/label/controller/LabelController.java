@@ -24,9 +24,9 @@ public class LabelController {
 
     @PostMapping("/labels")
     @Operation(summary = "새로운 라벨 생성", description = "라벨의 이름과 색상 정보를 받아 새로운 라벨을 생성합니다.")
-    public ResponseEntity<ApiResponseDto> createLabel(@RequestBody LabelRequestDto requestDto, @RequestParam("boardId") Long boardId) {
-        labelService.createLabel(requestDto, boardId);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "라벨 생성 완료"));
+    public ResponseEntity<LabelResponseDto> createLabel(@RequestBody LabelRequestDto requestDto, @RequestParam("boardId") Long boardId) {
+        LabelResponseDto responseDto = labelService.createLabel(requestDto, boardId);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @GetMapping("/labels")
@@ -38,9 +38,9 @@ public class LabelController {
 
     @PutMapping("/labels/{labelId}")
     @Operation(summary = "라벨 정보 수정", description = "보드 내에 생성되어 있는 라벨의 정보를 변경합니다.")
-    public ResponseEntity<ApiResponseDto> editLabel(@PathVariable Long labelId, @RequestBody LabelRequestDto requestDto) {
-        labelService.editLabel(labelId, requestDto);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "라벨 수정 완료."));
+    public ResponseEntity<LabelResponseDto> editLabel(@PathVariable Long labelId, @RequestBody LabelRequestDto requestDto) {
+        LabelResponseDto responseDto = labelService.editLabel(labelId, requestDto);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @DeleteMapping("/labels/{labelId}")

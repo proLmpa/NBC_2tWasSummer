@@ -17,10 +17,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LabelServiceImpl implements LabelService {
-
     private final LabelRepository labelRepository;
     private final BoardRepository boardRepository;
-
 
     @Override
     @Transactional(readOnly = true)
@@ -33,22 +31,26 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     @Transactional
-    public void createLabel(LabelRequestDto requestDto, Long boardId) {
+    public LabelResponseDto createLabel(LabelRequestDto requestDto, Long boardId) {
         Board board = findBoard(boardId);
         findDuplicateLabel(requestDto.getTitle());
 
         Label label = new Label(requestDto);
         label.setBoard(board);
         labelRepository.save(label);
+
+        return new LabelResponseDto(label);
     }
 
     @Override
     @Transactional
-    public void editLabel(Long labelId, LabelRequestDto requestDto) {
+    public LabelResponseDto editLabel(Long labelId, LabelRequestDto requestDto) {
         findDuplicateLabel(requestDto.getTitle());
 
         Label label = findLabel(labelId);
         label.editLabel(requestDto);
+
+        return new LabelResponseDto(label);
     }
 
     @Override
