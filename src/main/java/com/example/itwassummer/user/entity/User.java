@@ -1,5 +1,6 @@
 package com.example.itwassummer.user.entity;
 
+import com.example.itwassummer.board.entity.Board;
 import com.example.itwassummer.boardmember.entity.BoardMember;
 import com.example.itwassummer.userpassword.entity.UserPassword;
 import jakarta.persistence.*;
@@ -33,10 +34,13 @@ public class User {
     private String nickname;
     private String introduction;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserPassword> userPasswords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<BoardMember> boardMembers = new ArrayList<>();
 
     public User(String email, String password, UserRoleEnum role) {

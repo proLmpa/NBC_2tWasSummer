@@ -56,7 +56,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
     private Board findBoard(Long boardId) {
         return boardRepository.findById(boardId).orElseThrow(()
                 -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
-    } // 해당 ErrorCode가 존재하지 않으면 CustomErrorCode에 추가하셔야 합니다.
+    }
 
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(()

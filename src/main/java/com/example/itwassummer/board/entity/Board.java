@@ -45,7 +45,7 @@ public class Board {
     private List<Deck> deckList = new ArrayList<>();
 
     // 보드 사용자 목록
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<BoardMember> boardMembers = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {

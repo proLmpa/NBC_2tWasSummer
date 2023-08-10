@@ -9,7 +9,4 @@ import java.util.Optional;
 
 public interface BoardMemberRepository extends JpaRepository<BoardMember, Long> {
     Optional<BoardMember> findByBoardAndUser(Board board, User invitee);
-
-    void deleteAllByBoard_Id(Long id);
-
 }
