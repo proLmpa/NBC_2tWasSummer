@@ -1,5 +1,7 @@
 package com.example.itwassummer.card.dto;
 
+import com.example.itwassummer.checklist.dto.CheckListResponseDto;
+import com.example.itwassummer.checklist.entity.CheckList;
 import com.example.itwassummer.common.file.S3FileDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -30,5 +32,14 @@ public class CardViewResponseDto {
 
   //첨부파일 정보 표시하는 리스트
   private List<S3FileDto> attachment = null;
+
+  // 등록일
+  private String createdAt;
+
+  // 수정일
+  private String modifiedAt;
+
+  //체크리스트 표시하는 리스트
+  private List<CheckListResponseDto> checkLists = null;
 
 }

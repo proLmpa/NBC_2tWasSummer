@@ -2,30 +2,39 @@ package com.example.itwassummer.card.entity;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.cardlabel.entity.CardLabel;
+import com.example.itwassummer.checklist.entity.CheckList;
 import com.example.itwassummer.comment.entity.Comment;
+import com.example.itwassummer.common.entity.Timestamped;
 import com.example.itwassummer.common.file.S3FileDto;
-import com.example.itwassummer.deck.entity.Deck;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "card")
-public class Card {
+public class Card extends Timestamped {
 
-  //// 컬럼
+  // 컬럼
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "card_id")
   private Long id;
 
   @Column(length = 10, nullable = false)
@@ -40,24 +49,23 @@ public class Card {
 
   @Column(nullable = false)
   private Long parentId;
-/*
-  @Column
-  private String attachment;*/
 
   @Convert(converter = S3FileDto.S3FileDtoConverter.class)
   @Type(JsonType.class)
   @Column(name="attachment",columnDefinition = "json")
   private List<S3FileDto> attachment;
 
-  //// 연관관계
+  // 연관관계
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
  
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CardLabel> cardLabels = new ArrayList<>();
-  
 
-  //// 생성자
+  @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
+  private List<CheckList> checkLists = new ArrayList<>();
+
+  // 생성자
   @Builder
   public Card(CardRequestDto requestDto) {
     this.name = requestDto.getName();

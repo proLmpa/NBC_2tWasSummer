@@ -8,6 +8,9 @@ import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.cardmember.repository.CardMemberRepository;
+import com.example.itwassummer.check.dto.ChecksResponseDto;
+import com.example.itwassummer.checklist.dto.CheckListResponseDto;
+import com.example.itwassummer.checklist.service.CheckListService;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.common.file.FileUploader;
@@ -37,14 +40,18 @@ public class CardServiceImpl implements CardService {
 
   private final CardMemberRepository cardMemberRepository;
 
+  private final CheckListService checkListService;
+
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
 
 
   @Override
+  @Transactional(readOnly = true)
   public CardViewResponseDto getCard(Long cardId) {
     Card card = this.findCard(cardId);
     CardViewResponseDto responseDto = null;
+
     if (card != null) {
       responseDto = CardViewResponseDto
           .builder()
@@ -54,6 +61,23 @@ public class CardServiceImpl implements CardService {
           .description(card.getDescription())
           .attachment(card.getAttachment())
           .parentId(card.getParentId())
+          .createdAt(String.valueOf(card.getCreatedAt()))
+          .modifiedAt(String.valueOf(card.getModifiedAt()))
+          .checkLists(card.getCheckLists().stream().map(v ->
+              CheckListResponseDto.builder()
+                  .title(v.getTitle())
+                  .createdAt(String.valueOf(v.getCreatedAt()))
+                  .modifiedAt(String.valueOf(v.getModifiedAt()))
+                  .checks(v.getChecks().stream().map(n ->
+                      ChecksResponseDto.builder()
+                          .name(n.getName())
+                          .checked(n.isChecked())
+                          .createdAt(String.valueOf(n.getCreatedAt()))
+                          .modifiedAt(String.valueOf(n.getModifiedAt()))
+                          .build()
+                  ).toList())
+                  .build()
+          ).toList())
           .build();
     }
 
@@ -83,6 +107,7 @@ public class CardServiceImpl implements CardService {
         .description(returnCard.getDescription())
         .attachment(fileDtoList)
         .parentId(card.getParentId())
+        .createdAt(String.valueOf(card.getCreatedAt()))
         .build();
     return responseDto;
   }
@@ -121,6 +146,8 @@ public class CardServiceImpl implements CardService {
         .description(card.getDescription())
         .attachment(fileDtoList)
         .parentId(card.getParentId())
+        .createdAt(String.valueOf(card.getCreatedAt()))
+        .modifiedAt(String.valueOf(card.getModifiedAt()))
         .build();
 
     return responseDto;
@@ -140,6 +167,10 @@ public class CardServiceImpl implements CardService {
         fileUploader.deleteFile(attachment.get(i).getUploadFilePath(),
             attachment.get(i).getUploadFileName());
       }
+    }
+    //기존 체크리스트 삭제
+    for (int i = 0; i < card.getCheckLists().size(); i++) {
+      checkListService.delete(card.getCheckLists().get(i).getId());
     }
 
     cardRepository.deleteById(card.getId());
