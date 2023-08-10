@@ -1,7 +1,6 @@
 package com.example.itwassummer.label.service;
 
-import com.example.itwassummer.label.dto.LabelCreateRequestDto;
-import com.example.itwassummer.label.dto.LabelEditRequestDto;
+import com.example.itwassummer.label.dto.LabelRequestDto;
 import com.example.itwassummer.label.dto.LabelResponseDto;
 
 import java.util.List;
@@ -20,24 +19,21 @@ public interface LabelService {
      *
      * @param requestDto 라벨 생성에 필요한 정보. title, color코드
      * @param boardId    라벨이 생성될 보드의 Id
-     * @return 완료 메시지 반환
      */
-    String createLabel(LabelCreateRequestDto requestDto, Long boardId);
+    void createLabel(LabelRequestDto requestDto, Long boardId);
 
     /**
      * 해당 라벨의 정보를 수정.
      *
      * @param labelId    라벨의 Id값
      * @param requestDto 라벨의 수정하고자 하는 정보.
-     * @return 완료 메시지 반환
      */
-    String editLabel(Long labelId, LabelEditRequestDto requestDto);
+    void editLabel(Long labelId, LabelRequestDto requestDto);
 
     /**
      * 해당 라벨을 삭제.
      *
      * @param labelId 라벨의 Id값
-     * @return 완료 메시지 반환
      */
-    String deleteLabel(Long labelId);
+    void deleteLabel(Long labelId);
 }

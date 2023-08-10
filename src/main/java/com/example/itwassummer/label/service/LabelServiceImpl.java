@@ -1,9 +1,10 @@
 package com.example.itwassummer.label.service;
 
+import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.board.repository.BoardRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
-import com.example.itwassummer.label.dto.LabelCreateRequestDto;
-import com.example.itwassummer.label.dto.LabelEditRequestDto;
+import com.example.itwassummer.label.dto.LabelRequestDto;
 import com.example.itwassummer.label.dto.LabelResponseDto;
 import com.example.itwassummer.label.entity.Label;
 import com.example.itwassummer.label.repository.LabelRepository;
@@ -18,54 +19,57 @@ import java.util.List;
 public class LabelServiceImpl implements LabelService {
 
     private final LabelRepository labelRepository;
-//    private final BoardRepository boardRepository; todo Board 적용 후 수정 예정
+    private final BoardRepository boardRepository;
 
 
     @Override
     @Transactional(readOnly = true)
     public List<LabelResponseDto> getLabels(Long boardId) {
+        findBoard(boardId);
 
         List<Label> labels = labelRepository.findAllByBoard_Id(boardId);
-        List<LabelResponseDto> labelResponseDtos = labels.stream().map(LabelResponseDto::new).toList();
-
-        return labelResponseDtos;
+        return labels.stream().map(LabelResponseDto::new).toList();
     }
 
     @Override
     @Transactional
-    public String createLabel(LabelCreateRequestDto requestDto, Long boardId) {
+    public void createLabel(LabelRequestDto requestDto, Long boardId) {
+        Board board = findBoard(boardId);
+        findDuplicateLabel(requestDto.getTitle());
 
-//        Board board = boardRepository.findById(boardId); //todo Board 머지 후 수정
-
-        Label newLabel = new Label(requestDto);
-//        newLabel.addBoard(board); //todo Board 머지 후 수정
-        labelRepository.save(newLabel);
-
-        return "라벨 생성 완료";
+        Label label = new Label(requestDto);
+        label.setBoard(board);
+        labelRepository.save(label);
     }
 
     @Override
     @Transactional
-    public String editLabel(Long labelId, LabelEditRequestDto requestDto) {
+    public void editLabel(Long labelId, LabelRequestDto requestDto) {
+        findDuplicateLabel(requestDto.getTitle());
 
         Label label = findLabel(labelId);
         label.editLabel(requestDto);
-
-        return "라벨 수정 완료.";
     }
 
     @Override
     @Transactional
-    public String deleteLabel(Long labelId) {
-
+    public void deleteLabel(Long labelId) {
         Label label = findLabel(labelId);
         labelRepository.delete(label);
+    }
 
-        return "라벨 삭제 완료.";
+    private Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(() ->
+                new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
+    }
+
+    private void findDuplicateLabel(String title) {
+        if(labelRepository.existsByTitle(title))
+                throw new CustomException(CustomErrorCode.LABEL_ALREADY_EXISTS, null);
     }
 
     private Label findLabel(Long labelId) {
-        return labelRepository.findById(labelId)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.LABEL_NOT_FOUND, null));
+        return labelRepository.findById(labelId).orElseThrow(() ->
+                new CustomException(CustomErrorCode.LABEL_NOT_FOUND, null));
     }
 }
