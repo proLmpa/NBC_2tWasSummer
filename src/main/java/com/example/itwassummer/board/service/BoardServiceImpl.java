@@ -8,6 +8,7 @@ import com.example.itwassummer.boardmember.entity.BoardMember;
 import com.example.itwassummer.boardmember.repository.BoardMemberRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
+import com.example.itwassummer.label.repository.LabelRepository;
 import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
@@ -26,6 +27,7 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final BoardMemberRepository boardMemberRepository;
+    private final LabelRepository labelRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -80,6 +82,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = findBoard(id);
         confirmUser(board, user);
 
+        labelRepository.deleteAllByBoard_Id(board.getId());
         boardMemberRepository.deleteAllByBoard_Id(board.getId());
         boardRepository.deleteById(id);
     }

@@ -9,4 +9,6 @@ public interface LabelRepository extends JpaRepository<Label, Long> {
     List<Label> findAllByBoard_Id(Long id);
 
     boolean existsByTitle(String title);
+
+    void deleteAllByBoard_Id(Long id);
 }

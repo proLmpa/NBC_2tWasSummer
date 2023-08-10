@@ -4,6 +4,7 @@ import com.example.itwassummer.board.dto.BoardRequestDto;
 import com.example.itwassummer.boardmember.entity.BoardMember;
 import com.example.itwassummer.common.entity.Timestamped;
 import com.example.itwassummer.deck.entity.Deck;
+import com.example.itwassummer.label.entity.Label;
 import com.example.itwassummer.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,13 +41,17 @@ public class Board extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // 보드 내부에 들어갈 Deck의 값, 연관 관계
-    @OneToMany(mappedBy = "board")
-    private List<Deck> deckList = new ArrayList<>();
-
     // 보드 사용자 목록
     @OneToMany(mappedBy = "board")
     private List<BoardMember> boardMembers = new ArrayList<>();
+
+    // 보드 라벨 목록
+    @OneToMany(mappedBy = "board")
+    private List<Label> labels = new ArrayList<>();
+
+    // 보드 덱 목록
+    @OneToMany(mappedBy = "board")
+    private List<Deck> deckList = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
         this.name = requestDto.getName();
