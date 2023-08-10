@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DeckRepository extends JpaRepository<Deck, Long>, DeckCustomRepository{
-	Deck findByParentNullAndBoard(Board board);
+	Deck findByParentNullAndBoardAndIsDeletedFalse(Board board);
 
 	Deck findByParentAndIsDeletedFalse(Deck deck);
 }

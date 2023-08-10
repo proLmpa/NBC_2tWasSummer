@@ -6,7 +6,7 @@ import com.example.itwassummer.deck.dto.DeckMoveRequestDto;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 import com.example.itwassummer.deck.entity.Deck;
 import com.example.itwassummer.deck.repository.DeckRepository;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +26,10 @@ public class DeckServiceImpl implements DeckService {
 		Board board = findBoard(boardId);
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
 		Deck deck = new Deck(name, board);
-		deck.updateParent(getLastDeck(deckList));
 		deckRepository.save(deck);
-
+		if (deckList.size() != 0) {
+			deck.updateParent(getLastDeck(deckList));
+		}
 		return new DeckResponseDto(deck);
 	}
 
@@ -55,13 +56,15 @@ public class DeckServiceImpl implements DeckService {
 		deck.updateName(name);
 	}
 
+
+	// 수정이 필요합니다.(테스트 통과 X)
 	@Transactional
 	@Override
 	public void moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
 		Board board = findBoard(requestDto.getBoardId());
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(requestDto.getBoardId());
 		Deck lastDeck = getLastDeck(deckList);
-		Deck firstDeck = deckRepository.findByParentNullAndBoard(board);
+		Deck firstDeck = deckRepository.findByParentNullAndBoardAndIsDeletedFalse(board);
 		Deck deck = findDeck(deckId);
 		Deck parentDeck = null;
 		if (requestDto.getParentId() != 0) {
