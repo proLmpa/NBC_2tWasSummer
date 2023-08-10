@@ -1,12 +1,10 @@
 package com.example.itwassummer.deck.service;
 
 import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.board.repository.BoardRepository;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 import com.example.itwassummer.deck.entity.Deck;
-import com.example.itwassummer.deck.repository.BoardRepository;
 import com.example.itwassummer.deck.repository.DeckRepository;
-import com.querydsl.core.Tuple;
-import io.swagger.v3.oas.models.links.Link;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
