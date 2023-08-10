@@ -20,7 +20,6 @@ import java.util.List;
 public class DeckController {
 	private final DeckServiceImpl deckService;
 
-	// 덱 생성
 	@Operation(summary = "Deck 생성", description = "boardId에 맞는 Board에 Deck을 생성하고 DeckResponseDto를 반환합니다.")
 	@PostMapping("/decks")
 	public ResponseEntity<DeckResponseDto> createDeck(@RequestParam Long boardId,
@@ -29,7 +28,6 @@ public class DeckController {
 		return ResponseEntity.ok().body(responseDto);
 	}
 
-	// 덱 전체 조회
 	@Operation(summary = "Deck 전체 조회", description = "전체 Deck을 순서대로 조회합니다.")
 	@GetMapping("/decks")
 	public ResponseEntity<List<DeckResponseDto>> getAllDecks(@RequestParam Long boardId) {
@@ -37,7 +35,6 @@ public class DeckController {
 		return ResponseEntity.ok().body(responseDtoList);
 	}
 
-	// 덱 단일 조회
 	@Operation(summary = "Deck 단일 조회", description = "deckId에 맞는 Deck을 조회하여 DeckResponseDto로 반환합니다.")
 	@GetMapping("/decks/{deckId}")
 	public ResponseEntity<DeckResponseDto> getDeck(@PathVariable Long deckId) {
@@ -45,8 +42,6 @@ public class DeckController {
 		return ResponseEntity.ok().body(responseDto);
 	}
 
-
-	// 덱 이름 변경
 	@Operation(summary = "Deck 이름 수정", description = "deckId에 맞는 Deck을 조회하여 이름을 수정합니다.")
 	@PatchMapping("/decks/{deckId}/name")
 	public ResponseEntity<ApiResponseDto> updateDeckName(@PathVariable Long deckId,
@@ -55,7 +50,6 @@ public class DeckController {
 		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 이름 수정 완료"));
 	}
 
-	// 덱 위치 변경
 	@Operation(summary = "Deck 위치 변경", description = "deckId에 맞는 Deck을 조회하여 위치를 수정합니다.")
 	@PatchMapping("/decks/{deckId}/position")
 	public ResponseEntity<ApiResponseDto> moveDeck(@PathVariable Long deckId,
@@ -64,7 +58,6 @@ public class DeckController {
 		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 이동 완료"));
 	}
 
-	// 덱 삭제(논리적 삭제)
 	@Operation(summary = "Deck 보관", description = "deckId에 맞는 Deck을 조회하여 논리적 삭제를 진행합니다.")
 	@PatchMapping("/decks/{deckId}/delete")
 	public ResponseEntity<ApiResponseDto> deleteDeck(@PathVariable Long deckId) {
@@ -72,8 +65,7 @@ public class DeckController {
 		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 삭제 완료"));
 	}
 
-	// 복구 목록에서 덱 조회(삭제된 덱 조회)
-	@Operation(summary = "Deck 조회", description = "boardId에 맞는 보드에서 삭제된 덱들을 조회합니다.")
+	@Operation(summary = "삭제된 Deck 조회(복구 목록)", description = "boardId에 맞는 보드에서 삭제된 덱들을 조회합니다.")
 	@GetMapping("/decks/deleted")
 	public ResponseEntity<DeckResponseDto> getDeletedDecks(@RequestParam Long boardId) {
 		return null;
