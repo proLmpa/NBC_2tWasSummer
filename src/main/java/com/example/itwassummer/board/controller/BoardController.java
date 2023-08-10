@@ -25,15 +25,15 @@ public class BoardController {
 
     @Operation(summary = "보드 조회", description = "현재 선택한 보드의 내부를 조회합니다.")
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BoardResponseDto> showBoards(@PathVariable("boardId") Long boardId) {
-        BoardResponseDto responseDto = boardService.showBoards(boardId);
+    public ResponseEntity<BoardResponseDto> showBoard(@PathVariable("boardId") Long boardId) {
+        BoardResponseDto responseDto = boardService.showBoard(boardId);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @Operation(summary = "전체 보드 조회", description = "전체 보드의 목록을 조회합니다.")
     @GetMapping("/boards")
-    public ResponseEntity<List<BoardResponseDto>> showAllBoards() {
-        List<BoardResponseDto> responseDto = boardService.showAllBoards();
+    public ResponseEntity<List<BoardResponseDto>> showBoards() {
+        List<BoardResponseDto> responseDto = boardService.showBoards();
         return ResponseEntity.ok().body(responseDto);
     }
 

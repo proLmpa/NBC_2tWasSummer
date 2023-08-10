@@ -26,14 +26,14 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public BoardResponseDto showBoards(Long id) {
+    public BoardResponseDto showBoard(Long id) {
         Board board = findBoard(id);
         return new BoardResponseDto(board);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> showAllBoards() {
+    public List<BoardResponseDto> showBoards() {
         List<Board> boardList = boardRepository.findAll();
         return boardList.stream().map(BoardResponseDto::new).toList();
     }
@@ -69,7 +69,6 @@ public class BoardServiceImpl implements BoardService {
         Board board = findBoard(id);
         confirmUser(board, user);
 
-        boardMemberRepository.deleteAllByBoard_Id(id);
         boardRepository.deleteById(id);
     }
 

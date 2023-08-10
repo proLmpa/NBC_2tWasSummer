@@ -12,13 +12,13 @@ public interface BoardService {
      * @param boardId 조회할 보드 ID
      * @return 조회한 보드 정보
      */
-    BoardResponseDto showBoards(Long boardId);
+    BoardResponseDto showBoard(Long boardId);
 
     /**
      * 전체 보드 조회
      * @return 조회한 전체 보드 정보
      */
-    List<BoardResponseDto> showAllBoards();
+    List<BoardResponseDto> showBoards();
 
     /**
      * 보드 생성
