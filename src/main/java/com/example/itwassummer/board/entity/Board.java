@@ -20,7 +20,6 @@ import java.util.List;
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
     private Long id;
 
     // 보드 이름
@@ -45,7 +44,7 @@ public class Board {
     private List<Deck> deckList = new ArrayList<>();
 
     // 보드 사용자 목록
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "board")
     private List<BoardMember> boardMembers = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
