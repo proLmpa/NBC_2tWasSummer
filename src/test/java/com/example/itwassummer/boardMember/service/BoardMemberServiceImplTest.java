@@ -107,11 +107,11 @@ public class BoardMemberServiceImplTest {
         String boardName = "workspace";
 
         User invitee = findUserByEmail(testEmail);
-        User foundUser = findUserByEmail(adminEmail);
+        User inviter = findUserByEmail(adminEmail);
         Board foundBoard = findBoard(boardName);
 
         // when
-        boardMemberService.inviteBoardMember(foundBoard.getId(), invitee.getId(), foundUser);
+        boardMemberService.inviteBoardMember(foundBoard.getId(), invitee.getId(), inviter);
 
         // then
         BoardMember member = boardMemberRepository.findByBoardAndUser(foundBoard, invitee).orElse(null);
@@ -128,16 +128,62 @@ public class BoardMemberServiceImplTest {
         String boardName = "workspace";
 
         User invitee = findUserByEmail(testEmail);
-        User foundUser = findUserByEmail(adminEmail);
+        User inviter = findUserByEmail(adminEmail);
         Board foundBoard = findBoard(boardName);
 
         // when
-        boardMemberService.inviteBoardMember(foundBoard.getId(), invitee.getId(), foundUser);
-        boardMemberService.deleteBoardMember(foundBoard.getId(), invitee.getId(), foundUser);
+        boardMemberService.inviteBoardMember(foundBoard.getId(), invitee.getId(), inviter);
+        boardMemberService.deleteBoardMember(foundBoard.getId(), invitee.getId(), inviter);
 
         // then
         BoardMember member = boardMemberRepository.findByBoardAndUser(foundBoard, invitee).orElse(null);
         Assertions.assertNull(member);
+    }
+
+    @Test
+    @DisplayName("작업자가 여럿 등록된 보드 제거")
+    void deleteBoard() {
+        // given
+        String testEmail = "test@email.com";
+        String adminEmail = "admin@email.com";
+        String boardName = "workspace";
+
+        User invitee = findUserByEmail(testEmail);
+        User inviter = findUserByEmail(adminEmail);
+        Board foundBoard = findBoard(boardName);
+
+        // when
+        boardMemberService.inviteBoardMember(foundBoard.getId(), invitee.getId(), inviter);
+        boardService.deleteBoard(foundBoard.getId(), inviter);
+
+        // then
+        Assertions.assertNotNull(findUserByEmail(testEmail));
+        Assertions.assertNotNull(findUserByEmail(adminEmail));
+        Assertions.assertEquals(0, boardMemberRepository.findAll().size());
+        // -- 외래 키 참조로 인한 삭제 기능 수행 불가
+    }
+
+    @Test
+    @DisplayName("작업자가 여럿 등록된 보드의 생성자 제거")
+    void deleteBoardCreator() {
+        // given
+        String testEmail = "test@email.com";
+        String adminEmail = "admin@email.com";
+        String boardName = "workspace";
+
+        User invitee = findUserByEmail(testEmail);
+        User inviter = findUserByEmail(adminEmail);
+        Board foundBoard = findBoard(boardName);
+
+        // when
+        boardMemberService.inviteBoardMember(foundBoard.getId(), invitee.getId(), inviter);
+        userService.deleteUserInfo(inviter.getId(), inviter);
+
+        // then
+        Assertions.assertNotNull(findUserByEmail(testEmail));
+        Assertions.assertNull(findUserByEmail(adminEmail));
+        Assertions.assertNull(findBoard(boardName));
+        Assertions.assertEquals(0, boardMemberRepository.findAll().size());
     }
 
     private User findUserByEmail(String email) {
@@ -145,7 +191,6 @@ public class BoardMemberServiceImplTest {
     }
 
     private Board findBoard(String name) {
-        return boardRepository.findAll().stream().filter(
-                board -> board.getName().equals(name)).findFirst().orElse(null);
+        return boardRepository.findByName(name).orElse(null);
     }
 }
