@@ -7,6 +7,7 @@ import com.example.itwassummer.deck.service.DeckServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,9 +68,9 @@ public class DeckController {
 	// 덱 삭제(논리적 삭제)
 	@Operation(summary = "Deck 보관", description = "deckId에 맞는 Deck을 조회하여 논리적 삭제를 진행합니다.")
 	@PatchMapping("/decks/{deckId}/delete")
-	public ResponseEntity<ApiResponseDto> deleteDeck(@PathVariable Long deckId,
-													 @RequestParam Boolean isDeleted) {
-		return null;
+	public ResponseEntity<ApiResponseDto> deleteDeck(@PathVariable Long deckId) {
+		deckService.deleteDeck(deckId);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 삭제 완료"));
 	}
 
 	// 복구 목록에서 덱 조회(삭제된 덱 조회)

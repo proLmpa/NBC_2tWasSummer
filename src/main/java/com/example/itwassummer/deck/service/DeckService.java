@@ -33,4 +33,9 @@ public interface DeckService {
 		@param deckId, requestDto (덱 위치 수정 요청 정보)
 	 */
 	void moveDeck(Long deckId, DeckMoveRequestDto requestDto);
+
+	/*
+		@param deckId (덱 삭제 요청 정보)
+	 */
+	void deleteDeck(Long deckId);
 }

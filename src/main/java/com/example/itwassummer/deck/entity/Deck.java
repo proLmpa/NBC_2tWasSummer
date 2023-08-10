@@ -40,4 +40,8 @@ public class Deck extends Timestamped {
 	public void updateName(String name) {
 		this.name = name;
 	}
+
+	public void deleteDeck() {
+		this.isDeleted = true;
+	}
 }

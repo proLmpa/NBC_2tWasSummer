@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +74,7 @@ public class DeckServiceImpl implements DeckService {
 				deck.updateParent(null);
 				firstDeck.updateParent(deck);
 			} else { // 중간으로 옮길 때
-				Deck childDeck = deckRepository.findByParent(parentDeck);
+				Deck childDeck = deckRepository.findByParentAndIsDeletedFalse(parentDeck);
 				childDeck.updateParent(deck);
 				deck.updateParent(parentDeck);
 			}
@@ -82,7 +83,7 @@ public class DeckServiceImpl implements DeckService {
 
 		// Deck이 처음에 있을 때 or Deck이 중간에 있을 때
 
-		Deck myChildDeck = deckRepository.findByParent(deck);
+		Deck myChildDeck = deckRepository.findByParentAndIsDeletedFalse(deck);
 		myChildDeck.updateParent(null);
 
 		// Deck이 처음에 있을 때
@@ -90,7 +91,7 @@ public class DeckServiceImpl implements DeckService {
 			if (requestDto.getParentId().equals(lastDeck.getId())) { // 끝으로 옮길 때
 				deck.updateParent(lastDeck);
 			} else {
-				Deck otherChildDeck = deckRepository.findByParent(parentDeck);
+				Deck otherChildDeck = deckRepository.findByParentAndIsDeletedFalse(parentDeck);
 				otherChildDeck.updateParent(deck);
 				deck.updateParent(parentDeck);
 			}
@@ -102,13 +103,32 @@ public class DeckServiceImpl implements DeckService {
 
 		if (requestDto.getParentId() == 0) { // 처음으로 옮길 때
 			firstDeck.updateParent(deck);
-		} else if(requestDto.getParentId().equals(lastDeck.getId())){ // 끝으로 옮길 때
+		} else if (requestDto.getParentId().equals(lastDeck.getId())) { // 끝으로 옮길 때
 
 		} else { // 중간으로 옮길 때
-			Deck otherChildDeck = deckRepository.findByParent(parentDeck);
+			Deck otherChildDeck = deckRepository.findByParentAndIsDeletedFalse(parentDeck);
 			otherChildDeck.updateParent(deck);
 		}
 		deck.updateParent(parentDeck);
+	}
+
+	@Override
+	@Transactional
+	public void deleteDeck(Long deckId) {
+		Deck deck = findDeck(deckId);
+		if (deck.getIsDeleted()) {
+			throw new RejectedExecutionException("이미 삭제된 Deck입니다.");
+		}
+		Deck myChildDeck = deckRepository.findByParentAndIsDeletedFalse(deck);
+		if (myChildDeck != null) {
+			if (deck.getParent() != null) {
+				myChildDeck.updateParent(deck.getParent());
+			} else {
+				myChildDeck.updateParent(null);
+			}
+		}
+		deck.updateParent(null);
+		deck.deleteDeck();
 	}
 
 	/////////////////////////////////////////////////////////////////
