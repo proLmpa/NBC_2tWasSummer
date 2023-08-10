@@ -8,7 +8,6 @@ import com.example.itwassummer.deck.dto.DeckMoveRequestDto;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 import com.example.itwassummer.deck.entity.Deck;
 import com.example.itwassummer.deck.repository.DeckRepository;
-import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class DeckServiceImpl implements DeckService {
 		Deck deck = new Deck(name, board);
 		deckRepository.save(deck);
 		if (deckList.size() != 0) {
-			deck.updateParent(connectDecks(deckList).getLast());
+			deck.updateParent(sortDecks(deckList).getLast());
 		}
 		return new DeckResponseDto(deck);
 	}
@@ -42,7 +40,7 @@ public class DeckServiceImpl implements DeckService {
 	public List<DeckResponseDto> getAllDecks(Long boardId) {
 		Board board = findBoard(boardId);
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
-		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
+		LinkedList<Deck> deckLinkedList = sortDecks(deckList);
 		return deckLinkedList.stream().map(DeckResponseDto::new).toList();
 	}
 
@@ -67,7 +65,7 @@ public class DeckServiceImpl implements DeckService {
 	public void moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
 		Board board = findBoard(requestDto.getBoardId());
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(requestDto.getBoardId());
-		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
+		LinkedList<Deck> deckLinkedList = sortDecks(deckList);
 		Deck lastDeck = deckLinkedList.getLast();
 		Deck firstDeck = deckLinkedList.getFirst();
 		Deck deck = findDeck(deckId);
@@ -154,7 +152,7 @@ public class DeckServiceImpl implements DeckService {
 
 	}
 
-	private LinkedList<Deck> connectDecks(List<Deck> deckList) {
+	private LinkedList<Deck> sortDecks(List<Deck> deckList) {
 		LinkedList<Deck> deckLinkedList = new LinkedList<>();
 		deckLinkedList.add(deckList.get(0));
 		if (deckList.size() == 1) {
