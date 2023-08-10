@@ -7,6 +7,7 @@ import com.example.itwassummer.deck.service.DeckServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +51,8 @@ public class DeckController {
 	@PatchMapping("/decks/{deckId}/name")
 	public ResponseEntity<ApiResponseDto> updateDeckName(@PathVariable Long deckId,
 														 @RequestParam String name) {
-		return null;
+		deckService.updateDeckName(deckId,name);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(),"Deck 이름 수정 완료"));
 	}
 
 	// 덱 위치 변경

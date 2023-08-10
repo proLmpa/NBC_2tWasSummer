@@ -22,4 +22,10 @@ public interface DeckService {
 		@return DeckResponseDto(개별 덱 조회)
 	 */
 	DeckResponseDto getDeck(Long deckId);
+
+	/*
+		@param deckId, name(덱 이름 수정 요청 정보)
+		@return void
+	 */
+	void updateDeckName(Long deckId, String name);
 }

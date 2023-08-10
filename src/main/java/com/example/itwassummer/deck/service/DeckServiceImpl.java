@@ -32,6 +32,7 @@ public class DeckServiceImpl implements DeckService {
 		return new DeckResponseDto(deck);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<DeckResponseDto> getAllDecks(Long boardId) {
 		Board board = findBoard(boardId);
@@ -40,6 +41,7 @@ public class DeckServiceImpl implements DeckService {
 		return deckLinkedList.stream().map(DeckResponseDto::new).toList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public DeckResponseDto getDeck(Long deckId) {
 		Deck deck = findDeck(deckId);
@@ -50,6 +52,16 @@ public class DeckServiceImpl implements DeckService {
 			throw new RejectedExecutionException("선택한 Deck은 삭제되었습니다.");
 		}
 		return new DeckResponseDto(deck);
+	}
+
+	@Transactional
+	@Override
+	public void updateDeckName(Long deckId, String name) {
+		Deck deck = findDeck(deckId);
+		if(deck == null) {
+			throw new EntityNotFoundException("선택한 Deck은 존재하지 않습니다.");
+		}
+		deck.updateName(name);
 	}
 
 

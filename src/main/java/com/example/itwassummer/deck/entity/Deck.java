@@ -36,4 +36,8 @@ public class Deck extends Timestamped {
 	public void updateParent(Deck parent) {
 		this.parent = parent;
 	}
+
+	public void updateName(String name) {
+		this.name = name;
+	}
 }
