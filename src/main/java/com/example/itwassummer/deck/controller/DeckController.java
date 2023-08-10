@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -24,6 +26,14 @@ public class DeckController {
 													  @RequestParam String name) {
 		DeckResponseDto responseDto = deckService.createDeck(boardId, name);
 		return ResponseEntity.ok().body(responseDto);
+	}
+
+	// 덱 전체 조회
+	@Operation(summary = "Deck 전체 조회", description = "전체 Deck을 순서대로 조회합니다.")
+	@GetMapping("/decks")
+	public ResponseEntity<List<DeckResponseDto>> getAllDecks(@RequestParam Long boardId) {
+		List<DeckResponseDto> responseDtoList = deckService.getAllDecks(boardId);
+		return ResponseEntity.ok().body(responseDtoList);
 	}
 
 	// 덱 단일 조회

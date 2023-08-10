@@ -22,13 +22,21 @@ public class DeckServiceImpl implements DeckService {
 	@Transactional
 	public DeckResponseDto createDeck(Long boardId, String name) {
 		Board board = findBoard(boardId);
-		List<Deck> deckList = deckRepository.findAllDecks();
+		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
 		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
 		Deck deck = new Deck(name, board);
 		deck.updateParent(deckLinkedList.getLast());
 		deckRepository.save(deck);
 
 		return new DeckResponseDto(deck);
+	}
+
+	@Override
+	public List<DeckResponseDto> getAllDecks(Long boardId) {
+		Board board = findBoard(boardId);
+		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
+		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
+		return deckLinkedList.stream().map(DeckResponseDto::new).toList();
 	}
 
 
