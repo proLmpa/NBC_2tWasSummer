@@ -19,6 +19,7 @@ public class UserPassword extends Timestamped {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public UserPassword(String password, User user) {

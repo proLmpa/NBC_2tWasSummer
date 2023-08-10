@@ -38,8 +38,6 @@ class UserControllerTest {
     private static final String BASE_URL = "/api/users";
 
     @BeforeEach
-    @Test
-    @DisplayName("회원 가입 테스트")
     void signup() throws Exception {
         // given
         String email = "user2023@email.com";
@@ -57,10 +55,10 @@ class UserControllerTest {
 
         // then
         mvc.perform(post(BASE_URL + "/signup")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-        // @BeforeEach 때문에 signup()도 실행 전에 signup()이 한번 더 실행되는 문제로 인해 결과 예측은 하지 않기로 함.
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -226,9 +224,6 @@ class UserControllerTest {
 
         int statusCode = ((Long) jsonObj.get("statusCode")).intValue();
         Assertions.assertEquals(200, statusCode);
-        // 한글 깨짐 문제로 인해 확인 불가
-//        String statusMessage = (String) jsonObj.get("statusMessage");
-//        Assertions.assertEquals("회원 정보 삭제 성공", statusMessage);
     }
 
     @Test
