@@ -13,6 +13,7 @@ public enum CustomErrorCode {
     LABEL_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 라벨입니다."),
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 사용자입니다."),
     BOARD_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 보드입니다."),
+    BOARD_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 보드입니다."),
     UNAUTHORIZED_REQUEST(HttpStatus.UNAUTHORIZED.value(), "승인되지 않은 요청입니다."),
     OLD_PASSWORD_MISMATCHED(HttpStatus.BAD_REQUEST.value(), "기존 비밀번호와 일치하지 않습니다."),
     NEW_PASSWORD_MISMATCHED(HttpStatus.BAD_REQUEST.value(), "새 비밀번호가 일치하지 않습니다."),

@@ -42,6 +42,11 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public BoardResponseDto createBoards(BoardRequestDto requestDto, User user) {
         user = findUser(user.getId());
+
+        // 동일한 이름의 보드 존재 시 생성 불가
+        if (boardRepository.findByName(requestDto.getName()).isPresent())
+            throw new CustomException(CustomErrorCode.BOARD_ALREADY_EXIST, null);
+
         Board board = new Board(requestDto, user);
         boardRepository.save(board);
 
@@ -83,7 +88,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void confirmUser(Board board, User user) {
-        if(!board.getUser().getId().equals(user.getId())
+        if (!board.getUser().getId().equals(user.getId())
                 && !user.getRole().equals(UserRoleEnum.ADMIN))
             throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUEST, null);
     }
