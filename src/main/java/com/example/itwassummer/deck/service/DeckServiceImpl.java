@@ -2,6 +2,8 @@ package com.example.itwassummer.deck.service;
 
 import com.example.itwassummer.board.entity.Board;
 import com.example.itwassummer.board.repository.BoardRepository;
+import com.example.itwassummer.common.error.CustomErrorCode;
+import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.deck.dto.DeckMoveRequestDto;
 import com.example.itwassummer.deck.dto.DeckResponseDto;
 import com.example.itwassummer.deck.entity.Deck;
@@ -120,7 +122,7 @@ public class DeckServiceImpl implements DeckService {
 	public void deleteDeck(Long deckId) {
 		Deck deck = findDeck(deckId);
 		if (deck.getIsDeleted()) {
-			throw new RejectedExecutionException("이미 삭제된 Deck입니다.");
+			throw new CustomException(CustomErrorCode.ALREADY_DELETED_DECK, null);
 		}
 		Deck myChildDeck = deckRepository.findByParentAndIsDeletedFalse(deck);
 		if (myChildDeck != null) {
@@ -138,13 +140,13 @@ public class DeckServiceImpl implements DeckService {
 
 	private Board findBoard(Long id) {
 		return boardRepository.findById(id).orElseThrow(() ->
-				new EntityNotFoundException("선택한 Board는 존재하지 않습니다.")
+				new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null)
 		);
 	}
 
 	private Deck findDeck(Long id) {
 		return deckRepository.findById(id).orElseThrow(() ->
-				new EntityNotFoundException("선택한 Deck은 존재하지 않습니다.")
+				new CustomException(CustomErrorCode.DECK_NOT_FOUND, null)
 		);
 
 	}
