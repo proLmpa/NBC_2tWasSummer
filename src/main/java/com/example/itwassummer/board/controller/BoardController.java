@@ -47,14 +47,14 @@ public class BoardController {
     @Operation(summary = "보드 수정", description = "배경 색상 / 보드 이름 / 설명을 수정합니다.")
     @PutMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> updateBoards(@PathVariable("boardId") Long id, @Valid @RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        BoardResponseDto responseDto = boardService.update(id, requestDto, userDetails.getUser());
+        BoardResponseDto responseDto = boardService.updateBoard(id, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(responseDto);
     }
 
     @Operation(summary = "보드 삭제", description = "보드를 생성한 사용자만 삭제를 할 수 있습니다.")
     @DeleteMapping("/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> deleteBoards(@PathVariable("boardId") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        boardService.delete(id, userDetails.getUser());
+        boardService.deleteBoard(id, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "보드 삭제 성공"));
     }
 }

@@ -35,12 +35,12 @@ public interface BoardService {
      * @param user 보드 수정하는 사용자 정보
      * @return 수정된 보드 정보
      */
-    BoardResponseDto update(Long id, BoardRequestDto requestDto, User user);
+    BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, User user);
 
     /**
      * 보드 삭제
      * @param id 삭제할 보드 ID
      * @param user 보드를 삭제할 사용자 정보
      */
-    void delete(Long id, User user);
+    void deleteBoard(Long id, User user);
 }

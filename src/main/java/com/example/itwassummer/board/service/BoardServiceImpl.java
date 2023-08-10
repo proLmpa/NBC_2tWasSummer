@@ -59,7 +59,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public BoardResponseDto update(Long id, BoardRequestDto requestDto, User user) {
+    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, User user) {
         Board board = findBoard(id);
         confirmUser(board, user);
 
@@ -70,7 +70,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void delete(Long id, User user) {
+    public void deleteBoard(Long id, User user) {
         Board board = findBoard(id);
         confirmUser(board, user);
 
