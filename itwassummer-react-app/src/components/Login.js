@@ -1,20 +1,20 @@
 // src/components/Login.js
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    const navigate = useNavigate();
     const handleLogin = async () => {
         try {
+            const formdata = new FormData();
             // Call your API here to perform the login
             const response = await fetch('YOUR_API_ENDPOINT', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
+                body: formdata
             });
 
             if (response.ok) {
@@ -27,6 +27,11 @@ const Login = () => {
             // Handle error (e.g., show error message)
         }
     };
+
+    const handleSignupClick = () => {
+        navigate('/signup') // v6
+    };
+
 
     return (
         <div>
@@ -44,6 +49,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <button onClick={handleLogin}>Login</button>
+            <button onClick={handleSignupClick}>Go to Signup</button>
         </div>
     );
 };
