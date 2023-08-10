@@ -74,6 +74,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = findBoard(id);
         confirmUser(board, user);
 
+        boardMemberRepository.deleteAllByBoard_Id(board.getId());
         boardRepository.deleteById(id);
     }
 
