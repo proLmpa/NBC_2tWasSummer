@@ -12,6 +12,9 @@ import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +36,17 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> showBoards() {
-        List<Board> boardList = boardRepository.findAll();
-        return boardList.stream().map(BoardResponseDto::new).toList();
+    public List<BoardResponseDto> showBoards(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return boardRepository.findAll(pageable).stream().map(BoardResponseDto::new).toList();
     }
 
     @Override
     @Transactional
-    public BoardResponseDto createBoards(BoardRequestDto requestDto, User user) {
+    public BoardResponseDto createBoard(BoardRequestDto requestDto, User user) {
         user = findUser(user.getId());
 
         // 동일한 이름의 보드 존재 시 생성 불가

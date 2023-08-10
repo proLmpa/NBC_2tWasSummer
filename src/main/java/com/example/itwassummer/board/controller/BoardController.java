@@ -32,15 +32,19 @@ public class BoardController {
 
     @Operation(summary = "전체 보드 조회", description = "전체 보드의 목록을 조회합니다.")
     @GetMapping("/boards")
-    public ResponseEntity<List<BoardResponseDto>> showBoards() {
-        List<BoardResponseDto> responseDto = boardService.showBoards();
+    public ResponseEntity<List<BoardResponseDto>> showBoards(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc) {
+        List<BoardResponseDto> responseDto = boardService.showBoards(page - 1, size, sortBy, isAsc);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @Operation(summary = "보드 생성", description = "새로운 보드를 생성합니다.")
     @PostMapping("/boards")
     public ResponseEntity<BoardResponseDto> createBoards(@Valid @RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        BoardResponseDto responseDto = boardService.createBoards(requestDto, userDetails.getUser());
+        BoardResponseDto responseDto = boardService.createBoard(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(responseDto);
     }
 

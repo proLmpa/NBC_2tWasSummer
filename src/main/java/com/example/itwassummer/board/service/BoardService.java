@@ -16,9 +16,13 @@ public interface BoardService {
 
     /**
      * 전체 보드 조회
+     * @param page 조회할 페이지 순번
+     * @param size 조회할 페이지에 담길 보드 크기
+     * @param sortBy 정렬 기준
+     * @param isAsc 오름차순/내림차순 정렬 여부
      * @return 조회한 전체 보드 정보
      */
-    List<BoardResponseDto> showBoards();
+    List<BoardResponseDto> showBoards(int page, int size, String sortBy, boolean isAsc);
 
     /**
      * 보드 생성
@@ -26,7 +30,7 @@ public interface BoardService {
      * @param user 보드 생성하는 사용자 정보
      * @return 생성된 보드 정보
      */
-    BoardResponseDto createBoards(BoardRequestDto requestDto, User user);
+    BoardResponseDto createBoard(BoardRequestDto requestDto, User user);
 
     /**
      * 보드 내용 수정

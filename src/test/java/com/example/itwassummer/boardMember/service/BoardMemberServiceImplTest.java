@@ -89,7 +89,7 @@ public class BoardMemberServiceImplTest {
         BoardRequestDto boardRequestDto = BoardRequestDto.builder()
                 .name(name).description(description).color(color).build();
 
-        BoardResponseDto responseDto = boardService.createBoards(boardRequestDto, found);
+        BoardResponseDto responseDto = boardService.createBoard(boardRequestDto, found);
 
         // then
         Assertions.assertEquals(responseDto.getName(), name);

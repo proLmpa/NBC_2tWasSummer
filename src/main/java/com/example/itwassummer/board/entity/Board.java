@@ -2,6 +2,7 @@ package com.example.itwassummer.board.entity;
 
 import com.example.itwassummer.board.dto.BoardRequestDto;
 import com.example.itwassummer.boardmember.entity.BoardMember;
+import com.example.itwassummer.common.entity.Timestamped;
 import com.example.itwassummer.deck.entity.Deck;
 import com.example.itwassummer.user.entity.User;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "board")
-public class Board {
+public class Board extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
