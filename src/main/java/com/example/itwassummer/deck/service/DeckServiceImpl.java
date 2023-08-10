@@ -30,7 +30,7 @@ public class DeckServiceImpl implements DeckService {
 		Deck deck = new Deck(name, board);
 		deckRepository.save(deck);
 		if (deckList.size() != 0) {
-			deck.updateParent(getLastDeck(deckList));
+			deck.updateParent(connectDecks(deckList).getLast());
 		}
 		return new DeckResponseDto(deck);
 	}
@@ -65,8 +65,9 @@ public class DeckServiceImpl implements DeckService {
 	public void moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
 		Board board = findBoard(requestDto.getBoardId());
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(requestDto.getBoardId());
-		Deck lastDeck = getLastDeck(deckList);
-		Deck firstDeck = deckRepository.findByParentNullAndBoardAndIsDeletedFalse(board);
+		LinkedList<Deck> deckLinkedList = connectDecks(deckList);
+		Deck lastDeck = deckLinkedList.getLast();
+		Deck firstDeck = deckLinkedList.getFirst();
 		Deck deck = findDeck(deckId);
 		Deck parentDeck = null;
 		if (requestDto.getParentId() != 0) {
@@ -149,10 +150,6 @@ public class DeckServiceImpl implements DeckService {
 				new CustomException(CustomErrorCode.DECK_NOT_FOUND, null)
 		);
 
-	}
-
-	private Deck getLastDeck(List<Deck> deckList) {
-		return connectDecks(deckList).getLast();
 	}
 
 	private LinkedList<Deck> connectDecks(List<Deck> deckList) {
