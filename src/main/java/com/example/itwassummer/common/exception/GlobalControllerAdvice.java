@@ -2,6 +2,7 @@ package com.example.itwassummer.common.exception;
 
 import com.example.itwassummer.common.dto.ApiResponseDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,4 +30,17 @@ public class GlobalControllerAdvice {
 
         return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), errorMessage.toString()));
     }
+
+    @ExceptionHandler({NullPointerException.class})
+    public ResponseEntity<ApiResponseDto> nullPointerExceptionHandler(NullPointerException ex) {
+        ApiResponseDto restApiException = new ApiResponseDto(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+         return ResponseEntity.badRequest().body(restApiException);
+    }
+
+    @ExceptionHandler({SizeLimitExceededException.class})
+    public ResponseEntity<ApiResponseDto> sizeLimitExceededException(SizeLimitExceededException ex) {
+        ApiResponseDto restApiException = new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return ResponseEntity.badRequest().body(restApiException);
+    }
+
 }

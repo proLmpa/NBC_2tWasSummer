@@ -1,5 +1,7 @@
 package com.example.itwassummer.user.entity;
 
+import com.example.itwassummer.board.entity.BoardMembers;
+import com.example.itwassummer.board.service.BoardService;
 import com.example.itwassummer.userpassword.entity.UserPassword;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -35,6 +37,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<UserPassword> userPasswords = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<BoardMembers> boardMembersList = new ArrayList<>();
 
     public User(String email, String password, UserRoleEnum role) {
         this.email = email;
