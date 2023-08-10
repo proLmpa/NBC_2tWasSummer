@@ -54,7 +54,8 @@ public class DeckController {
 	@PatchMapping("/decks/{deckId}/position")
 	public ResponseEntity<ApiResponseDto> moveDeck(@PathVariable Long deckId,
 												   @RequestBody DeckMoveRequestDto requestDto) {
-		deckService.moveDeck(deckId, requestDto);
+		List<Long> list = deckService.moveDeck(deckId, requestDto);
+		deckService.updateParent(list);
 		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 이동 완료"));
 	}
 

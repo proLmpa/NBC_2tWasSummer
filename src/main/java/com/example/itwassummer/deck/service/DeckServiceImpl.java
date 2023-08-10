@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +30,8 @@ public class DeckServiceImpl implements DeckService {
 		Deck deck = new Deck(name, board);
 		deckRepository.save(deck);
 		if (deckList.size() != 0) {
-			deck.updateParent(sortDecks(deckList).getLast());
+			List<Deck> deckSortedList = sortDecks(deckList);
+			deck.updateParent(deckSortedList.get(deckSortedList.size() - 1));
 		}
 		return new DeckResponseDto(deck);
 	}
@@ -40,7 +41,7 @@ public class DeckServiceImpl implements DeckService {
 	public List<DeckResponseDto> getAllDecks(Long boardId) {
 		Board board = findBoard(boardId);
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
-		LinkedList<Deck> deckLinkedList = sortDecks(deckList);
+		List<Deck> deckLinkedList = sortDecks(deckList);
 		return deckLinkedList.stream().map(DeckResponseDto::new).toList();
 	}
 
@@ -58,64 +59,50 @@ public class DeckServiceImpl implements DeckService {
 		deck.updateName(name);
 	}
 
-
 	// 수정이 필요합니다.(테스트 통과 X)
 	@Transactional
 	@Override
-	public void moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
+	public List<Long> moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
 		Board board = findBoard(requestDto.getBoardId());
-		List<Deck> deckList = deckRepository.findAllDecksByBoardId(requestDto.getBoardId());
-		LinkedList<Deck> deckLinkedList = sortDecks(deckList);
-		Deck lastDeck = deckLinkedList.getLast();
-		Deck firstDeck = deckLinkedList.getFirst();
 		Deck deck = findDeck(deckId);
-		Deck parentDeck = null;
+
+		List<Deck> deckList = deckRepository.findAllDecksByBoardId(requestDto.getBoardId());
+
+		List<Deck> deckSortedList = sortDecks(deckList);
+
+		deckSortedList.remove(deck);
+
+		int parentIndex = 0;
 		if (requestDto.getParentId() != 0) {
-			parentDeck = findDeck(requestDto.getParentId());
-		}
-
-		// Deck이 끝에 있을 때
-		if (lastDeck.getId().equals(deckId)) {
-			if (requestDto.getParentId() == 0) {    // 처음으로 옮길 때
-				deck.updateParent(null);
-				firstDeck.updateParent(deck);
-			} else { // 중간으로 옮길 때
-				Deck childDeck = deckRepository.findByParentAndIsDeletedFalse(parentDeck);
-				childDeck.updateParent(deck);
-				deck.updateParent(parentDeck);
+			for (int i = 0; i < deckSortedList.size(); i++) {
+				if (deckSortedList.get(i).getId().equals(requestDto.getParentId())) {
+					parentIndex = i;
+				}
 			}
-			return;
+
+			deckSortedList.add(parentIndex + 1, deck);
+		} else {
+			deckSortedList.add(0, deck);
 		}
 
-		// Deck이 처음에 있을 때 or Deck이 중간에 있을 때
-
-		Deck myChildDeck = deckRepository.findByParentAndIsDeletedFalse(deck);
-		myChildDeck.updateParent(null);
-
-		// Deck이 처음에 있을 때
-		if (firstDeck.getId().equals(deckId)) {
-			if (requestDto.getParentId().equals(lastDeck.getId())) { // 끝으로 옮길 때
-				deck.updateParent(lastDeck);
-			} else {
-				Deck otherChildDeck = deckRepository.findByParentAndIsDeletedFalse(parentDeck);
-				otherChildDeck.updateParent(deck);
-				deck.updateParent(parentDeck);
-			}
-			return;
+		for (int i = 0; i < deckSortedList.size(); i++) {
+			deckSortedList.get(i).updateParent(null);
 		}
 
-		// Deck이 중간에 있을 때
-		myChildDeck.updateParent(deck.getParent());
+		List<Long> list = new ArrayList<>();
 
-		if (requestDto.getParentId() == 0) { // 처음으로 옮길 때
-			firstDeck.updateParent(deck);
-		} else if (requestDto.getParentId().equals(lastDeck.getId())) { // 끝으로 옮길 때
-
-		} else { // 중간으로 옮길 때
-			Deck otherChildDeck = deckRepository.findByParentAndIsDeletedFalse(parentDeck);
-			otherChildDeck.updateParent(deck);
+		for (int i = 0; i < deckSortedList.size(); i++) {
+			list.add(deckSortedList.get(i).getId());
 		}
-		deck.updateParent(parentDeck);
+		return list;
+	}
+
+	@Transactional
+	public void updateParent(List<Long> list) {
+		for (int i = 1; i < list.size(); i++) {
+			Deck deck = findDeck(list.get(i));
+			deck.updateParent(findDeck(list.get(i - 1)));
+		}
 	}
 
 	@Override
@@ -152,11 +139,11 @@ public class DeckServiceImpl implements DeckService {
 
 	}
 
-	private LinkedList<Deck> sortDecks(List<Deck> deckList) {
-		LinkedList<Deck> deckLinkedList = new LinkedList<>();
-		deckLinkedList.add(deckList.get(0));
+	private List<Deck> sortDecks(List<Deck> deckList) {
+		List<Deck> deckSortedList = new ArrayList<>();
+		deckSortedList.add(deckList.get(0));
 		if (deckList.size() == 1) {
-			return deckLinkedList;
+			return deckSortedList;
 		}
 
 		Map<Long, Deck> deckMap = new HashMap<>();
@@ -166,13 +153,13 @@ public class DeckServiceImpl implements DeckService {
 		}
 
 		for (int i = 1; i <= deckList.size() - 1; i++) {
-			Long lastId = deckLinkedList.getLast().getId();
+			Long lastId = deckSortedList.get(deckSortedList.size() - 1).getId();
 			if (deckMap.containsKey(lastId)) {
-				deckLinkedList.add(deckMap.get(lastId));
+				deckSortedList.add(deckMap.get(lastId));
 			}
 		}
 
-		return deckLinkedList;
+		return deckSortedList;
 	}
 
 }
