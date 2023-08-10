@@ -3,6 +3,7 @@ package com.example.itwassummer.card.controller;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.service.CardService;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.common.dto.ApiResponseDto;
@@ -39,6 +40,15 @@ public class CardController {
   }
 
   private final CardService cardService;
+
+
+  @Operation(summary = "카드 상세조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
+  @GetMapping(value ="/cards/{cardId}")
+  @ResponseBody
+  public ResponseEntity view(@PathVariable("cardId") Long cardId) {
+    CardViewResponseDto responseDto = cardService.getCard(cardId);
+    return new ResponseEntity<>(responseDto, HttpStatus.OK);
+  }
 
   @Operation(summary = "카드 등록", description = "CardRequestDto를 통해 카드정보를 전달 받은 후 DB에 저장하고 성공 메시지를 반환합니다.")
   @PostMapping(value = "/cards", consumes = {MediaType.APPLICATION_JSON_VALUE,

@@ -40,7 +40,7 @@ public class CardRepositoryTest {
         .dueDate(now)
         .description(description)
         .parentId(parentId)
-        .attachment("")
+        .attachment(null)
         .build();
     // given
     var cards = new Card(requestDto);

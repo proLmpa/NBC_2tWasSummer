@@ -5,11 +5,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
+import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.user.dto.LoginRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Transactional
 @SpringBootTest
@@ -36,6 +42,40 @@ public class CardControllerTest {
 
   private static final String BASE_URL = "/api/cards";
   private static final String USER_BASE_URL = "/api/users";
+
+  @Autowired
+  private WebApplicationContext webApplicationContext;
+
+  @BeforeEach
+  public void setup() throws Exception{
+    this.mvc = MockMvcBuilders
+        .webAppContextSetup(this.webApplicationContext)
+        .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
+        .build();
+  }
+
+  @Test
+  @DisplayName("카드 상세 조회 테스트")
+  void getCards() throws Exception {
+    // given
+    String header = login();
+
+    // when
+    Long cardId = 1L;
+
+    // then
+    MvcResult response = mvc.perform(get(BASE_URL + "/" + cardId)
+            .header("Authorization", header)
+        )
+        .andExpect(status().isOk())
+        .andDo(print()).andReturn();
+
+    // mock 객체 변환
+    ObjectMapper objectMapper = new ObjectMapper();
+    CardViewResponseDto viewResult = objectMapper.readValue(response.getResponse()
+        .getContentAsString(), CardViewResponseDto.class);
+    Assertions.assertEquals(cardId, viewResult.getCardId());
+  }
 
   @Test
   @DisplayName("카드 등록 테스트")

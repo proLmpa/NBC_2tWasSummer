@@ -2,6 +2,7 @@ package com.example.itwassummer.card.service;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
@@ -39,6 +40,25 @@ public class CardServiceImpl implements CardService {
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
 
+
+  @Override
+  public CardViewResponseDto getCard(Long cardId) {
+    Card card = this.findCard(cardId);
+    CardViewResponseDto responseDto = null;
+    if (card != null) {
+      responseDto = CardViewResponseDto
+          .builder()
+          .cardId(card.getId())
+          .name(card.getName())
+          .dueDate(String.valueOf(card.getDueDate()))
+          .description(card.getDescription())
+          .attachment(card.getAttachment())
+          .parentId(card.getParentId())
+          .build();
+    }
+
+    return responseDto;
+  }
 
   @Override
   @Transactional
