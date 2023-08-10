@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DeckCustomRepository {
 
-	List<Deck> findAllDecks();
+	List<Deck> findAllDecksByBoardId(Long boardId);
 }

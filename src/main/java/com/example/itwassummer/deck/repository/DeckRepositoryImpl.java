@@ -15,10 +15,12 @@ public class DeckRepositoryImpl implements DeckCustomRepository{
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<Deck> findAllDecks() {
+	public List<Deck> findAllDecksByBoardId(Long boardId) {
 		return  queryFactory.selectFrom(deck)
 				.leftJoin(deck.parent)
 				.fetchJoin()
+				.where(deck.board.id.eq(boardId))
+				.where(deck.isDeleted.isFalse())
 				.orderBy(deck.parent.id.asc().nullsFirst())
 				.fetch();
 	}
