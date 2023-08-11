@@ -44,4 +44,9 @@ public interface DeckService {
 		@return List<DeckResponseDto> (삭제된 덱 목록)
 	 */
 	List<DeckResponseDto> getDeletedDecks(Long boardId);
+
+	/*
+		@param deckId (덱 복구 요청 정보)
+	 */
+	void restoreDeck(Long deckId);
 }

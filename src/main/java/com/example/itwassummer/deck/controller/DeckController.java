@@ -77,7 +77,8 @@ public class DeckController {
 	@Operation(summary = "Deck 복구", description = "deckId에 맞는 Deck을 조회하여 복구합니다.")
 	@PatchMapping("/decks/{deckId}/restoration")
 	public ResponseEntity<ApiResponseDto> restoreDeck(@PathVariable Long deckId) {
-		return null;
+		deckService.restoreDeck(deckId);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 복구 완료"));
 	}
 
 }

@@ -51,4 +51,8 @@ public class Deck extends Timestamped {
 	public void deleteDeck() {
 		this.isDeleted = true;
 	}
+
+	public void restoreDeck() {
+		this.isDeleted = false;
+	}
 }
