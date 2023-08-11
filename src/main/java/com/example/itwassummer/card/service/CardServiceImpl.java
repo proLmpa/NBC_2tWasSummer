@@ -1,6 +1,5 @@
 package com.example.itwassummer.card.service;
 
-import com.example.itwassummer.board.dto.BoardResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
@@ -9,17 +8,16 @@ import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.cardmember.repository.CardMemberRepository;
-import com.example.itwassummer.check.dto.ChecksResponseDto;
 import com.example.itwassummer.checklist.service.CheckListService;
 import com.example.itwassummer.comment.dto.CommentResponseDto;
-import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.comment.repository.CommentRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.common.file.FileUploader;
 import com.example.itwassummer.common.file.S3FileDto;
+import com.example.itwassummer.deck.entity.Deck;
+import com.example.itwassummer.deck.repository.DeckRepository;
 import com.example.itwassummer.user.entity.User;
-import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -28,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -53,6 +50,8 @@ public class CardServiceImpl implements CardService {
 
   private final CommentRepository commentRepository;
 
+  private final DeckRepository deckRepository;
+
   @Override
   @Transactional(readOnly = true)
   public CardViewResponseDto getCard(Long cardId) {
@@ -66,6 +65,8 @@ public class CardServiceImpl implements CardService {
   public CardResponseDto save(CardRequestDto requestDto, List<MultipartFile> files)
       throws IOException {
 
+    Deck deck = findDeck(requestDto.getDeckId());
+
     // 파일 등록
     List<S3FileDto> fileDtoList = null;
     if (!(files == null || (files.size() == 1 && files.get(0).isEmpty()))) {
@@ -75,6 +76,7 @@ public class CardServiceImpl implements CardService {
 
     Card card = Card.builder()
         .requestDto(requestDto)
+        .deck(deck)
         .build();
     Card returnCard = cardRepository.save(card);
     CardResponseDto responseDto = new CardResponseDto(returnCard);
@@ -195,5 +197,11 @@ public class CardServiceImpl implements CardService {
     Pageable pageable = PageRequest.of(page, size, sort);
     List<CommentResponseDto> commentList = commentRepository.findAllByCard(card, pageable).stream().map(CommentResponseDto::new).toList();
     return commentList;
+  }
+
+  private Deck findDeck(Long id) {
+    return deckRepository.findById(id).orElseThrow(() ->
+        new CustomException(CustomErrorCode.DECK_NOT_FOUND, null)
+    );
   }
 }

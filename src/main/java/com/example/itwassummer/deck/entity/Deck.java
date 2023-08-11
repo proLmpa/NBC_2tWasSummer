@@ -1,8 +1,11 @@
 package com.example.itwassummer.deck.entity;
 
 import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.common.entity.Timestamped;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +28,9 @@ public class Deck extends Timestamped {
 	@OneToOne(fetch = FetchType.EAGER) // 덱들은 항상 같이 조회되므로
 	@JoinColumn(name = "parent_id")
 	private Deck parent;
+
+	@OneToMany(mappedBy = "deck")
+	private List<Card> cardList = new ArrayList<>();
 
 	private Boolean isDeleted = false;
 
