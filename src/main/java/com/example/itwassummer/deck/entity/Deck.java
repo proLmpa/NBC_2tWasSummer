@@ -30,8 +30,8 @@ public class Deck extends Timestamped {
 	@JoinColumn(name = "parent_id")
 	private Deck parent;
 
-	@OneToMany(mappedBy = "deck")
-	private List<Card> cardList = new ArrayList<>();
+//	@OneToMany(mappedBy = "deck")
+//	private List<Card> cardList = new ArrayList<>();
 
 	private Boolean isDeleted = false;
 
