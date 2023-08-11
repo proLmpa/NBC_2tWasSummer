@@ -139,8 +139,13 @@ public class DeckServiceImpl implements DeckService {
 	public void restoreDeck(Long deckId) {
 		Deck deck = findDeck(deckId);
 		if (!deck.getIsDeleted()) {
-			throw new CustomException(CustomErrorCode.NOT_DELETED_DECK,null);
+			throw new CustomException(CustomErrorCode.NOT_DELETED_DECK, null);
 		}
+
+		List<Deck> deckList = deckRepository.findAllDecksByBoardId(deck.getBoard().getId());
+		List<Deck> sortedList = sortDecks(deckList);
+
+		deck.updateParent(sortedList.get(sortedList.size() - 1));
 		deck.restoreDeck();
 	}
 
