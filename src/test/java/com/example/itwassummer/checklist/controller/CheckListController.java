@@ -64,7 +64,7 @@ public class CheckListController implements UserDetailsService {
   }
 
   @Test
-  @DisplayName("체크 상세 조회 테스트")
+  @DisplayName("체크리스트 상세 조회 테스트")
   void getCheckList() throws Exception {
     // given
     UserDetails userDetails = userDetailsService.loadUserByUsername("user@email.com");
@@ -94,17 +94,18 @@ public class CheckListController implements UserDetailsService {
   }
 
   @Test
-  @DisplayName("체크 등록 테스트")
+  @DisplayName("체크리스트 등록 테스트")
   void insertCheckLists() throws Exception {
     // given
-    String title = "예시체크리스트new";
-    boolean checked = false;
+    String title = "테스트체크사항3-1";
     UserDetails userDetails = userDetailsService.loadUserByUsername("user@email.com");
+    Long cardId = Long.valueOf(3);
 
     // when
     String body = mapper.writeValueAsString(
         CheckListRequestDto.builder()
             .title(title)
+            .cardId(cardId)
             .build()
     );
 

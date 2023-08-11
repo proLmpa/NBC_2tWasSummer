@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface CardService {
 
   /**
-   * 카드 마감일 수정
+   * 카드 상세 조회
    * @param cardId 카드 id
    * @return CardViewResponseDto 카드 상세 정보
    */
@@ -69,7 +69,7 @@ public interface CardService {
   CardResponseDto changeDueDate(Long cardId, String dueDate);
 
   /**
-   * 카드 마감일 수정
+   * 카드 이동
    * @param cardId 카드 데이터가 있는지 조회
    * @param order 정렬순서
    * @return CardResponseDto

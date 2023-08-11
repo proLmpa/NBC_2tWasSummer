@@ -1,5 +1,7 @@
 package com.example.itwassummer.check.dto;
 
+import com.example.itwassummer.check.entity.Checks;
+import com.example.itwassummer.checklist.entity.CheckList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,4 +24,12 @@ public class ChecksResponseDto {
 
   // 수정일
   private String modifiedAt;
+
+  public ChecksResponseDto(Checks checks){
+    this.name = checks.getName();
+    this.checked= checks.isChecked();
+    this.createdAt= String.valueOf(checks.getCreatedAt());
+    this.modifiedAt= String.valueOf(checks.getModifiedAt());
+  }
+
 }

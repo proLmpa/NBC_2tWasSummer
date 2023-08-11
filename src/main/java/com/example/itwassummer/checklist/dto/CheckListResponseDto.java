@@ -1,6 +1,7 @@
 package com.example.itwassummer.checklist.dto;
 
 import com.example.itwassummer.check.dto.ChecksResponseDto;
+import com.example.itwassummer.checklist.entity.CheckList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,12 @@ public class CheckListResponseDto {
 
   // 수정일
   private String modifiedAt;
+
+  public CheckListResponseDto(CheckList checkList){
+    this.title = checkList.getTitle();
+    this.checks= checkList.getChecks().stream().map(ChecksResponseDto::new).toList();
+    this.cardName=  checkList.getCard().getName();
+    this.createdAt= String.valueOf(checkList.getCreatedAt());
+    this.modifiedAt= String.valueOf(checkList.getModifiedAt());
+  }
 }

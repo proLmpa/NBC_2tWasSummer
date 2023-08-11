@@ -1,6 +1,6 @@
 package com.example.itwassummer.card.dto;
 
-import com.example.itwassummer.checklist.entity.CheckList;
+import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.common.file.S3FileDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -34,4 +34,15 @@ public class CardResponseDto {
 
   // 수정일
   private String modifiedAt;
+
+  // 생성자
+  public CardResponseDto(Card card) {
+    this.name = card.getName();
+    this.dueDate = String.valueOf(card.getDueDate());
+    this.description = card.getDescription();
+    this.attachment = card.getAttachment();
+    this.createdAt = String.valueOf(card.getCreatedAt());
+    this.modifiedAt = String.valueOf(card.getModifiedAt());
+    this.parentId = card.getParentId();
+  }
 }

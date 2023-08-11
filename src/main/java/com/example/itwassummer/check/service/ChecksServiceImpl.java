@@ -29,14 +29,9 @@ public class ChecksServiceImpl implements ChecksService {
         .build();
     check.addCheckList(checkList);
 
-    Checks returnCheck = checkRepository.save(check);
-    ChecksResponseDto responseDto = ChecksResponseDto
-        .builder()
-        .name(returnCheck.getName())
-        .checked(returnCheck.isChecked())
-        .createdAt(String.valueOf(returnCheck.getCreatedAt()))
-        .modifiedAt(String.valueOf(returnCheck.getModifiedAt()))
-        .build();
+    Checks returnChecks = checkRepository.save(check);
+    ChecksResponseDto responseDto = new ChecksResponseDto(returnChecks);
+
     return responseDto;
   }
 
@@ -44,20 +39,11 @@ public class ChecksServiceImpl implements ChecksService {
   @Transactional
   public ChecksResponseDto updateName(Long checkId, String name) {
     // 체크 데이터 조회
-    Checks check = findCheck(checkId);
+    Checks checks = findCheck(checkId);
 
     // check 내용 수정
-    check.updateName(name);
-    ChecksResponseDto responseDto = ChecksResponseDto
-        .builder()
-        .name(check.getName())
-        .checked(check.isChecked())
-        .createdAt(String.valueOf(check.getCreatedAt()))
-        .modifiedAt(String.valueOf(check.getModifiedAt()))
-        .createdAt(String.valueOf(check.getCreatedAt()))
-        .modifiedAt(String.valueOf(check.getModifiedAt()))
-        .build();
-
+    checks.updateName(name);
+    ChecksResponseDto responseDto = new ChecksResponseDto(checks);
     return responseDto;
   }
 
@@ -65,17 +51,11 @@ public class ChecksServiceImpl implements ChecksService {
   @Transactional
   public ChecksResponseDto updateCheck(Long checkId, boolean checked) {
     // 체크 데이터 조회
-    Checks check = findCheck(checkId);
+    Checks checks = findCheck(checkId);
 
     // check 내용 수정
-    check.updateCheck(checked);
-    ChecksResponseDto responseDto = ChecksResponseDto
-        .builder()
-        .name(check.getName())
-        .checked(check.isChecked())
-        .createdAt(String.valueOf(check.getCreatedAt()))
-        .modifiedAt(String.valueOf(check.getModifiedAt()))
-        .build();
+    checks.updateCheck(checked);
+    ChecksResponseDto responseDto = new ChecksResponseDto(checks);
 
     return responseDto;
   }

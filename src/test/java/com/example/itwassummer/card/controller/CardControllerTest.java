@@ -172,7 +172,7 @@ public class CardControllerTest implements UserDetailsService {
     // given
     UserDetails userDetails = userDetailsService.loadUserByUsername("user@email.com");
     String name = "예시카드3";
-    Long cardId = Long.valueOf(7);
+    Long cardId = Long.valueOf(4);
     Long parentId = Long.valueOf(5);
     String description = "예시카드입니다.";
     LocalDateTime now = LocalDateTime.now();
@@ -252,8 +252,8 @@ public class CardControllerTest implements UserDetailsService {
     UserDetails userDetails = userDetailsService.loadUserByUsername("user@email.com");
 
     // when
-    Long cardId = 5L;
-    Long order = 2L;
+    Long cardId = 3L;
+    Long order = 1L;
 
     // then
     mvc.perform(patch(BASE_URL + "/" + cardId + "/move")
@@ -271,7 +271,7 @@ public class CardControllerTest implements UserDetailsService {
     UserDetails userDetails = userDetailsService.loadUserByUsername("user@email.com");
 
     // when
-    Long cardId = 5L;
+    Long cardId = 3L;
     LocalDateTime newDueDate = LocalDateTime.now().plusDays(1); //1일 더하여 새로운 마감일 설정
 
     // then

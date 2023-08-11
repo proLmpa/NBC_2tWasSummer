@@ -1,5 +1,6 @@
 package com.example.itwassummer.checklist.service;
 
+import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.check.dto.ChecksResponseDto;
@@ -27,25 +28,7 @@ public class CheckListServiceImpl implements CheckListService {
   @Override
   public CheckListResponseDto getCheckList(Long listId) {
     CheckList checkList = this.findCheckList(listId);
-    CheckListResponseDto responseDto = null;
-    if (checkList != null) {
-      responseDto = CheckListResponseDto
-          .builder()
-          .cardName(checkList.getCard().getName())
-          .title(checkList.getTitle())
-          .createdAt(String.valueOf(checkList.getCreatedAt()))
-          .modifiedAt(String.valueOf(checkList.getModifiedAt()))
-          .checks(checkList.getChecks().stream().map(v ->
-              ChecksResponseDto.builder()
-                  .name(v.getName())
-                  .checked(v.isChecked())
-                  .createdAt(String.valueOf(v.getCreatedAt()))
-                  .modifiedAt(String.valueOf(v.getModifiedAt()))
-                  .build()
-          ).toList())
-          .build();
-    }
-
+    CheckListResponseDto responseDto = new CheckListResponseDto(checkList);
     return responseDto;
   }
 
@@ -58,13 +41,7 @@ public class CheckListServiceImpl implements CheckListService {
     Card card = findCard(requestDto.getCardId());
     checkList.addCard(card);
     CheckList returnCheckList = checkListRepository.save(checkList);
-    CheckListResponseDto responseDto = CheckListResponseDto
-        .builder()
-        .title(returnCheckList.getTitle())
-        .cardName(returnCheckList.getCard().getName())
-        .createdAt(String.valueOf(checkList.getCreatedAt()))
-        .modifiedAt(String.valueOf(checkList.getModifiedAt()))
-        .build();
+    CheckListResponseDto responseDto = new CheckListResponseDto(returnCheckList);
     return responseDto;
   }
 
@@ -75,13 +52,7 @@ public class CheckListServiceImpl implements CheckListService {
 
     // checkList 내용 수정
     checkList.update(requestDto);
-    CheckListResponseDto responseDto = CheckListResponseDto
-        .builder()
-        .title(checkList.getTitle())
-        .cardName(checkList.getCard().getName())
-        .createdAt(String.valueOf(checkList.getCreatedAt()))
-        .modifiedAt(String.valueOf(checkList.getModifiedAt()))
-        .build();
+    CheckListResponseDto responseDto = new CheckListResponseDto(checkList);
 
     return responseDto;
   }

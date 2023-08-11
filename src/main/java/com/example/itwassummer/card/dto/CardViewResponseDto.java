@@ -1,7 +1,7 @@
 package com.example.itwassummer.card.dto;
 
+import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.checklist.dto.CheckListResponseDto;
-import com.example.itwassummer.checklist.entity.CheckList;
 import com.example.itwassummer.common.file.S3FileDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -42,4 +42,18 @@ public class CardViewResponseDto {
   //체크리스트 표시하는 리스트
   private List<CheckListResponseDto> checkLists = null;
 
+  // 생성자
+  public CardViewResponseDto(Card card) {
+    this.cardId = card.getId();
+    this.name = card.getName();
+    this.dueDate = String.valueOf(card.getDueDate());
+    this.description = card.getDescription();
+    this.attachment = card.getAttachment();
+    this.createdAt = String.valueOf(card.getCreatedAt());
+    this.modifiedAt = String.valueOf(card.getModifiedAt());
+    this.parentId = card.getParentId();
+    this.checkLists = card.getCheckLists().stream().map(
+        CheckListResponseDto::new
+    ).toList();
+  }
 }

@@ -2,6 +2,7 @@ package com.example.itwassummer.card.entity;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.cardlabel.entity.CardLabel;
+import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.checklist.entity.CheckList;
 import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.common.entity.Timestamped;
@@ -65,6 +66,9 @@ public class Card extends Timestamped {
   @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
   private List<CheckList> checkLists = new ArrayList<>();
 
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CardMember> cardMembers = new ArrayList<>();
+
   // 생성자
   @Builder
   public Card(CardRequestDto requestDto) {
@@ -86,5 +90,10 @@ public class Card extends Timestamped {
   // 마감일 수정
   public void updateDueDate(LocalDateTime dueDate) {
     this.dueDate = dueDate;
+  }
+
+  // 정렬순서 수정
+  public void updateParentId(Long parentId) {
+    this.parentId = parentId;
   }
 }

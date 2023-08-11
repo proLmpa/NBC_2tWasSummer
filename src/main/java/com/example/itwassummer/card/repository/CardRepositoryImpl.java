@@ -28,14 +28,6 @@ public class CardRepositoryImpl implements CustomCardRepository {
             .or(card.parentId.eq(order))
         )
         .execute();
-    // 기존 id에 해당되는건은 바꾸려고하는 숫자(order)로 변경
-    queryFactory.update(card)
-        .set(card.parentId, order)
-        .where(card.id.eq(selectCard.getId())
-        )
-        .execute();
-
-
     return 1;
   }
 }
