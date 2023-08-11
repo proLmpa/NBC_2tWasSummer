@@ -6,6 +6,8 @@ import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.service.CardService;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
+import com.example.itwassummer.comment.dto.CommentResponseDto;
+import com.example.itwassummer.comment.service.CommentService;
 import com.example.itwassummer.common.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +44,8 @@ public class CardController {
 
   private final CardService cardService;
 
-
   @Operation(summary = "카드 상세조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
-  @GetMapping(value ="/cards/{cardId}")
+  @GetMapping(value = "/cards/{cardId}")
   @ResponseBody
   public ResponseEntity view(@PathVariable("cardId") Long cardId) {
     CardViewResponseDto responseDto = cardService.getCard(cardId);
@@ -64,7 +66,8 @@ public class CardController {
   @PutMapping(value = "/cards/{cardId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
       MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity updateCard(@PathVariable("cardId") Long cardId,
-      @Valid @RequestPart CardRequestDto requestDto, @RequestPart(required = false) List<MultipartFile> files
+      @Valid @RequestPart CardRequestDto requestDto,
+      @RequestPart(required = false) List<MultipartFile> files
   ) throws IOException {
     CardResponseDto returnDto = cardService.update(cardId, requestDto, files);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
@@ -86,7 +89,8 @@ public class CardController {
   )
       throws ParseException {
 
-    SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //검증할 날짜 포맷 설정
+    SimpleDateFormat dateFormatParser = new SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss"); //검증할 날짜 포맷 설정
     dateFormatParser.setLenient(false); //false일경우 처리시 입력한 값이 잘못된 형식일 시 오류가 발생
     dateFormatParser.parse(dueDate); //대상 값 포맷에 적용되는지 확인
 
@@ -119,13 +123,17 @@ public class CardController {
   @Operation(summary = "댓글 목록 조회", description = "id 값을 통해 삭제")
   @GetMapping("/cards/{cardId}/comments")
   @ResponseBody
-  public ResponseEntity list(
+  public ResponseEntity commentList(
+      @PathVariable("cardId") Long cardId,
       @RequestParam("page") int page,
       @RequestParam("size") int size,
       @RequestParam("sortBy") String sortBy,
       @RequestParam("isAsc") boolean isAsc
   ) {
-    return null;
+    List<CommentResponseDto> commentList = cardService.getCommentList(cardId,
+        page - 1, size, sortBy, isAsc);
+
+    return new ResponseEntity<>(commentList, HttpStatus.OK);
   }
 
 

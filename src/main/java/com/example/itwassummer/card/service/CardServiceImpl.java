@@ -1,5 +1,6 @@
 package com.example.itwassummer.card.service;
 
+import com.example.itwassummer.board.dto.BoardResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
@@ -8,12 +9,17 @@ import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.cardmember.repository.CardMemberRepository;
+import com.example.itwassummer.check.dto.ChecksResponseDto;
 import com.example.itwassummer.checklist.service.CheckListService;
+import com.example.itwassummer.comment.dto.CommentResponseDto;
+import com.example.itwassummer.comment.entity.Comment;
+import com.example.itwassummer.comment.repository.CommentRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.common.file.FileUploader;
 import com.example.itwassummer.common.file.S3FileDto;
 import com.example.itwassummer.user.entity.User;
+import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -22,6 +28,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +50,8 @@ public class CardServiceImpl implements CardService {
   private final CardMemberRepository cardMemberRepository;
 
   private final CheckListService checkListService;
+
+  private final CommentRepository commentRepository;
 
   @Override
   @Transactional(readOnly = true)
@@ -170,5 +183,17 @@ public class CardServiceImpl implements CardService {
     card.updateParentId(order);
     CardResponseDto responseDto = new CardResponseDto(card);
     return responseDto;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<CommentResponseDto> getCommentList(Long cardId, int page, int size, String sortBy,
+      boolean isAsc) {
+    Card card = findCard(cardId);
+    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+    List<CommentResponseDto> commentList = commentRepository.findAllByCard(card, pageable).stream().map(CommentResponseDto::new).toList();
+    return commentList;
   }
 }

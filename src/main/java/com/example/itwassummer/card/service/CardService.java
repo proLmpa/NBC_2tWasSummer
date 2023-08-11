@@ -5,8 +5,11 @@ import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
+import com.example.itwassummer.comment.dto.CommentResponseDto;
+import com.example.itwassummer.common.security.UserDetailsImpl;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -75,4 +78,17 @@ public interface CardService {
    * @return CardResponseDto
    */
   CardResponseDto moveCard(Long cardId, Long order);
+
+
+  /**
+   * 카드별 댓글 목록 조회
+   * @param cardId 카드 데이터가 있는지 조회
+   * @param page 페이지
+   * @param size 페이지별 사이즈
+   * @param sortBy 정렬순서
+   * @param isAsc 정렬기준 (오름차순, 내림차순)
+   * @return CardResponseDto
+   */
+  List<CommentResponseDto> getCommentList(Long cardId, int page, int size, String sortBy,
+      boolean isAsc);
 }

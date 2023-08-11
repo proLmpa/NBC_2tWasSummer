@@ -1,5 +1,6 @@
 package com.example.itwassummer.comment.service;
 
+import com.example.itwassummer.board.entity.Board;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.comment.dto.CommentCreateRequestDto;
@@ -9,6 +10,7 @@ import com.example.itwassummer.comment.repository.CommentRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.user.entity.User;
+import com.example.itwassummer.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +24,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public String createComment(Long cardId, CommentCreateRequestDto requestDto, User user) {
+    public String createComment(CommentCreateRequestDto requestDto, User user) {
 
         Comment comment = new Comment(requestDto);
-        Card card = findCard(cardId);
+        Card card = findCard(requestDto.getCardId());
         comment.addCard(card);
         comment.addUser(user);
         commentRepository.save(comment);
@@ -58,10 +60,11 @@ public class CommentServiceImpl implements CommentService {
         return "코멘트 삭제 완료";
     }
 
-    private void checkUser(User user1, User user2) {
-        if (!user1.equals(user2)) {
-            throw new IllegalArgumentException("본인의 코멘트만 삭제할 수 있습니다.");
-        }
+    // 사용자 정보 확인
+    private void checkUser(User commentUser, User loginUser) {
+        if (!commentUser.getId().equals(loginUser.getId())
+            && !loginUser.getRole().equals(UserRoleEnum.ADMIN))
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUEST, null);
     }
 
     private Comment findComment(Long commentId) {
