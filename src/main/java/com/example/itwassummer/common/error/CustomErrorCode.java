@@ -11,6 +11,7 @@ public enum CustomErrorCode {
     CARD_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 카드입니다."),
     COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 코멘트입니다."),
     LABEL_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 라벨입니다."),
+    LABEL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "이미 동명의 라벨이 존재합니다."),
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 사용자입니다."),
     BOARD_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 보드입니다."),
     BOARD_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 보드입니다."),
