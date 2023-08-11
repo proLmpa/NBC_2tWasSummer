@@ -124,6 +124,17 @@ public class DeckServiceImpl implements DeckService {
 		deck.deleteDeck();
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public List<DeckResponseDto> getDeletedDecks(Long boardId) {
+		Board board = findBoard(boardId);
+		List<Deck> deletedDeckList = deckRepository.findAllByBoardAndIsDeletedTrue(board);
+		if (deletedDeckList.size() == 0) {
+			throw new CustomException(CustomErrorCode.DELETED_DECK_NOT_FOUND, null);
+		}
+		return deletedDeckList.stream().map(DeckResponseDto::new).toList();
+	}
+
 	/////////////////////////////////////////////////////////////////
 
 	private Board findBoard(Long id) {

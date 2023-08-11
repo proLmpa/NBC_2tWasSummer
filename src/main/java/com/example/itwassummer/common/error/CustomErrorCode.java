@@ -24,7 +24,8 @@ public enum CustomErrorCode {
     BOARD_MEMBER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 작업자입니다."),
     BOARD_MEMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 작업자입니다."),
     ALREADY_DELETED_DECK(HttpStatus.BAD_REQUEST.value(), "이미 삭제된 덱입니다."),
-    DECK_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 덱입니다.");
+    DECK_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 덱입니다."),
+    DELETED_DECK_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "삭제된 덱이 없습니다.");
 
     private final int errorCode;
     private final String errorMessage;
