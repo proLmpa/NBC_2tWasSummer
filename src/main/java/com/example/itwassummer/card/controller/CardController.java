@@ -1,6 +1,7 @@
 package com.example.itwassummer.card.controller;
 
 
+import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
@@ -43,6 +44,20 @@ public class CardController {
   }
 
   private final CardService cardService;
+
+  @Operation(summary = "카드 전체조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
+  @GetMapping(value = "/cardLists")
+  @ResponseBody
+  public ResponseEntity list(@RequestParam Long boardId,
+      @RequestParam("page") int page,
+      @RequestParam("size") int size,
+      @RequestParam("sortBy") String sortBy,
+      @RequestParam("isAsc") boolean isAsc) {
+    List<CardListResponseDto> responseDto = cardService.getCardList(boardId,
+        page - 1, size, sortBy, isAsc);
+    return new ResponseEntity<>(responseDto, HttpStatus.OK);
+  }
+
 
   @Operation(summary = "카드 상세조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
   @GetMapping(value = "/cards/{cardId}")

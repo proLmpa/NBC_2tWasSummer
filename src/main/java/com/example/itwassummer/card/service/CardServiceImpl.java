@@ -1,5 +1,8 @@
 package com.example.itwassummer.card.service;
 
+import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.board.repository.BoardRepository;
+import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
@@ -51,6 +54,20 @@ public class CardServiceImpl implements CardService {
   private final CommentRepository commentRepository;
 
   private final DeckRepository deckRepository;
+
+  private final BoardRepository boardRepository;
+
+  @Override
+  public List<CardListResponseDto> getCardList(Long boardId, int page, int size, String sortBy,
+      boolean isAsc) {
+    Board board = findBoard(boardId);
+
+    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+    List<CardListResponseDto> lists = cardRepository.findAllByBoardId(boardId, pageable);
+    return lists;
+  }
 
   @Override
   @Transactional(readOnly = true)
@@ -195,10 +212,18 @@ public class CardServiceImpl implements CardService {
     Direction direction = isAsc ? Direction.ASC : Direction.DESC;
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
-    List<CommentResponseDto> commentList = commentRepository.findAllByCard(card, pageable).stream().map(CommentResponseDto::new).toList();
+    List<CommentResponseDto> commentList = commentRepository.findAllByCard(card, pageable).stream()
+        .map(CommentResponseDto::new).toList();
     return commentList;
   }
 
+  // 보드가 있는지 확인
+  private Board findBoard(Long boardId) {
+    return boardRepository.findById(boardId).orElseThrow(()
+        -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
+  }
+
+  // 덱이 있는지 확인
   private Deck findDeck(Long id) {
     return deckRepository.findById(id).orElseThrow(() ->
         new CustomException(CustomErrorCode.DECK_NOT_FOUND, null)
