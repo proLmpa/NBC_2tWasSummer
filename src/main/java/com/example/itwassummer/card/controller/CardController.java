@@ -3,6 +3,7 @@ package com.example.itwassummer.card.controller;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.service.CardService;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.common.dto.ApiResponseDto;
@@ -40,12 +41,21 @@ public class CardController {
 
   private final CardService cardService;
 
+
+  @Operation(summary = "카드 상세조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
+  @GetMapping(value ="/cards/{cardId}")
+  @ResponseBody
+  public ResponseEntity view(@PathVariable("cardId") Long cardId) {
+    CardViewResponseDto responseDto = cardService.getCard(cardId);
+    return new ResponseEntity<>(responseDto, HttpStatus.OK);
+  }
+
   @Operation(summary = "카드 등록", description = "CardRequestDto를 통해 카드정보를 전달 받은 후 DB에 저장하고 성공 메시지를 반환합니다.")
   @PostMapping(value = "/cards", consumes = {MediaType.APPLICATION_JSON_VALUE,
       MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity addCards(@Valid @RequestPart CardRequestDto requestDto,
-      @RequestPart List<MultipartFile> files
-  ) throws IllegalAccessException, IOException {
+  public ResponseEntity addCard(@Valid @RequestPart CardRequestDto requestDto,
+      @RequestPart(required = false) List<MultipartFile> files
+  ) throws IOException {
     CardResponseDto returnDto = cardService.save(requestDto, files);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
   }
@@ -53,17 +63,16 @@ public class CardController {
   @Operation(summary = "카드 수정", description = "CardRequestDto를 통해 카드정보를 전달 받은 후 DB에 저장하고 성공 메시지를 반환합니다.")
   @PutMapping(value = "/cards/{cardId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
       MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity updateCards(@PathVariable("cardId") Long cardId,
-      @Valid @RequestPart CardRequestDto requestDto, @RequestPart List<MultipartFile> files
-  ) throws IllegalAccessException, IOException {
+  public ResponseEntity updateCard(@PathVariable("cardId") Long cardId,
+      @Valid @RequestPart CardRequestDto requestDto, @RequestPart(required = false) List<MultipartFile> files
+  ) throws IOException {
     CardResponseDto returnDto = cardService.update(cardId, requestDto, files);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
   }
 
   @Operation(summary = "카드 삭제", description = "id 값을 통해 삭제")
   @DeleteMapping("/cards/{cardId}")
-  public ResponseEntity<ApiResponseDto> deleteCards(@PathVariable("cardId") Long cardId)
-      throws IllegalAccessException {
+  public ResponseEntity<ApiResponseDto> deleteCard(@PathVariable("cardId") Long cardId) {
     cardService.delete(cardId);
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "삭제 성공"));
   }
@@ -87,7 +96,7 @@ public class CardController {
 
   @Operation(summary = "카드별 사용자 변경", description = "카드별 사용자 일괄 삭제 후 재등록")
   @PatchMapping("/cards/{cardId}/members")
-  public ResponseEntity changeCardMembers(
+  public ResponseEntity changeCardMember(
       @PathVariable("cardId") Long cardId,
       @RequestParam String emailList
   )

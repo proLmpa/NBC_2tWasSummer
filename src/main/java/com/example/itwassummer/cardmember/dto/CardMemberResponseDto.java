@@ -1,5 +1,6 @@
 package com.example.itwassummer.cardmember.dto;
 
+import com.example.itwassummer.cardmember.entity.CardMember;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +21,9 @@ public class CardMemberResponseDto {
   // 카드 이름
   private String cardName;
 
+  public CardMemberResponseDto(CardMember cardMember) {
+    this.userEmail = cardMember.getUser().getEmail();
+    this.nickName = cardMember.getUser().getNickname();
+    this.cardName = cardMember.getCard().getName();
+  }
 }

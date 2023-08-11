@@ -2,11 +2,13 @@ package com.example.itwassummer.card.service;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.cardmember.repository.CardMemberRepository;
+import com.example.itwassummer.checklist.service.CheckListService;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.common.file.FileUploader;
@@ -15,11 +17,11 @@ import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,9 +38,15 @@ public class CardServiceImpl implements CardService {
 
   private final CardMemberRepository cardMemberRepository;
 
-  @Value("${cloud.aws.s3.bucket}")
-  private String bucketName;
+  private final CheckListService checkListService;
 
+  @Override
+  @Transactional(readOnly = true)
+  public CardViewResponseDto getCard(Long cardId) {
+    Card card = this.findCard(cardId);
+    CardViewResponseDto responseDto = new CardViewResponseDto(card);
+    return responseDto;
+  }
 
   @Override
   @Transactional
@@ -56,14 +64,7 @@ public class CardServiceImpl implements CardService {
         .requestDto(requestDto)
         .build();
     Card returnCard = cardRepository.save(card);
-    CardResponseDto responseDto = CardResponseDto
-        .builder()
-        .name(returnCard.getName())
-        .dueDate(String.valueOf(returnCard.getDueDate()))
-        .description(returnCard.getDescription())
-        .attachment(fileDtoList)
-        .parentId(card.getParentId())
-        .build();
+    CardResponseDto responseDto = new CardResponseDto(returnCard);
     return responseDto;
   }
 
@@ -94,14 +95,7 @@ public class CardServiceImpl implements CardService {
 
     // card 내용 수정
     card.update(requestDto);
-    CardResponseDto responseDto = CardResponseDto
-        .builder()
-        .name(card.getName())
-        .dueDate(String.valueOf(card.getDueDate()))
-        .description(card.getDescription())
-        .attachment(fileDtoList)
-        .parentId(card.getParentId())
-        .build();
+    CardResponseDto responseDto = new CardResponseDto(card);
 
     return responseDto;
   }
@@ -121,6 +115,10 @@ public class CardServiceImpl implements CardService {
             attachment.get(i).getUploadFileName());
       }
     }
+    //기존 체크리스트 삭제
+    for (int i = 0; i < card.getCheckLists().size(); i++) {
+      checkListService.delete(card.getCheckLists().get(i).getId());
+    }
 
     cardRepository.deleteById(card.getId());
   }
@@ -133,10 +131,11 @@ public class CardServiceImpl implements CardService {
   @Override
   @Transactional
   public List<CardMemberResponseDto> changeCardMembers(Long cardId, String emailList) {
-    List<CardMemberResponseDto> result = null;
+    List<CardMemberResponseDto> result = new ArrayList<>();
     // 전체삭제
-    cardMemberRepository.deleteByCardId(cardId);
+    // cardMemberRepository.deleteByCardId(cardId);
     Card nowCard = findCard(cardId);
+    nowCard.getCardMembers().clear();
     if (!emailList.isEmpty() && emailList != null) {
       List<String> emailArrays = Arrays.stream(emailList.split(",")).toList();
 
@@ -144,11 +143,12 @@ public class CardServiceImpl implements CardService {
         Optional<User> optionalUser = userRepository.findByEmail(emailArrays.get(i));
         if (optionalUser.isPresent()) {
           CardMember cardMember = new CardMember(nowCard, optionalUser.get());
-          cardMemberRepository.save(cardMember);
+          CardMember returnCardMember = cardMemberRepository.save(cardMember);
+          result.add(new CardMemberResponseDto(returnCardMember));
         }
       }
     }
-    return null;
+    return result;
   }
 
   @Override
@@ -156,17 +156,8 @@ public class CardServiceImpl implements CardService {
   public CardResponseDto changeDueDate(Long cardId, String dueDate) {
     Card card = findCard(cardId);
     LocalDateTime parseDueDate = LocalDateTime.parse(dueDate);
-
     card.updateDueDate(parseDueDate);
-
-    CardResponseDto responseDto = CardResponseDto
-        .builder()
-        .name(card.getName())
-        .dueDate(String.valueOf(card.getDueDate()))
-        .description(card.getDescription())
-        .parentId(card.getParentId())
-        .build();
-
+    CardResponseDto responseDto = new CardResponseDto(card);
     return responseDto;
   }
 
@@ -176,13 +167,8 @@ public class CardServiceImpl implements CardService {
     Card card = findCard(cardId);
     cardRepository.changeOrder(card, order);
     card = findCard(cardId);
-    CardResponseDto responseDto = CardResponseDto
-        .builder()
-        .name(card.getName())
-        .dueDate(String.valueOf(card.getDueDate()))
-        .description(card.getDescription())
-        .parentId(order)
-        .build();
+    card.updateParentId(order);
+    CardResponseDto responseDto = new CardResponseDto(card);
     return responseDto;
   }
 }

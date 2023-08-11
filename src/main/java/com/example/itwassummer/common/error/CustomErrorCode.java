@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum CustomErrorCode {
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 사용자입니다."),
     CARD_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 카드입니다."),
+    CHECK_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 체크항목입니다."),
+    CHECK_LIST_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 체크리스트입니다."),
     COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 코멘트입니다."),
     LABEL_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 라벨입니다."),
     LABEL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "이미 동명의 라벨이 존재합니다."),
