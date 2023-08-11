@@ -2,6 +2,7 @@ HELP.md
 .gradle
 application-ds.properties
 application-key.properties
+application-s3.properties
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -28,6 +29,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+# 파일 첨부 테스트
+!**/src/main/resources/image/**
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -37,3 +41,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## generated Files
+**/src/main/generated/**

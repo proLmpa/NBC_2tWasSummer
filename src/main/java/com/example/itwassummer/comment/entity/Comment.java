@@ -5,7 +5,15 @@ import com.example.itwassummer.comment.dto.CommentCreateRequestDto;
 import com.example.itwassummer.comment.dto.CommentEditRequestDto;
 import com.example.itwassummer.common.entity.Timestamped;
 import com.example.itwassummer.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +27,6 @@ public class Comment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
     private Long id;
 
     @Column(name = "content")
@@ -55,7 +62,7 @@ public class Comment extends Timestamped {
         card.getComments().add(this);
     }
 
-        //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
+    //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
 
     public void editComment(CommentEditRequestDto requestDto) {
         this.content = requestDto.getContent();
