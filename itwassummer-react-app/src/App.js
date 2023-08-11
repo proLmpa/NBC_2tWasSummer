@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
-import MemberSignUp from "./components/MemberSignUp";
+import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Board from "./components/Board";
 
@@ -11,16 +11,19 @@ function App() {
 
   const [authenticated, setAuthenticated] = useState(false);
   useEffect(() => {
-    const isAuthenticated = true; // Implement your authentication check logic
+    const isAuthenticated = false; // Implement your authentication check logic
     setAuthenticated(isAuthenticated);
   }, []);
 
   return (
+    // <div>
+    //   {authenticated ? <p>User is authenticated</p> : <p>User is not authenticated</p>}
+    // </div>
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<AuthGuard authenticated={authenticated}/>}/>
         <Route path="/login" element={<Login/>}/>
-        <Route path="/signup" element={<MemberSignUp/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
         <Route path="/board" element={<Board/>}/>
       </Routes>
     </BrowserRouter>
