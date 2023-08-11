@@ -2,6 +2,7 @@
 
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,22 +11,16 @@ const Login = () => {
   const navigate = useNavigate();
   const handleLogin = async () => {
     try {
-      console.log(email, password)
-      // Call your API here to perform the login
-      const response = await fetch('http://localhost:8080/api/users/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email, password})
-      });
+      const response = await axios.post('http://localhost:8080/api/users/login', {email, password});
+      const token = response.headers['authorization'];
 
-      if (response.ok) {
-        console.log(response)
-      } else {
-        console.log(response)
-      }
+      // Store the token in a cookie
+      document.cookie = `jwtToken=${token}; path=/`;
+
+      navigate('/board')
+
     } catch (error) {
-      console.error('Error logging in:', error);
-      // Handle error (e.g., show error message)
+      console.error('Login failed:', error);
     }
   };
 
@@ -56,31 +51,6 @@ const Login = () => {
       <button onClick={handleSignupClick}>Go to Signup</button>
     </div>
   );
-  //
-  //
-  // const formRef = useRef();
-  // const [cookies, setCookie] = useCookies(['id']); // 쿠키 훅
-  //
-  //
-  // const login = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .post('/users/login', { // 로그인 요청
-  //       id: formRef.current.id.value,
-  //       password: formRef.current.passWord.value,
-  //     })
-  //     .then((res) => {
-  //       setCookie('id', res.data.token);// 쿠키에 토큰 저장
-  //     });
-  // };
-  //
-  // return (
-  //   <form ref={formRef} onSubmit={login}>
-  //     <input type="text" name="id" placeholder="id" required />
-  //     <input type="password" name="passWord" placeholder="passWord" required />
-  //     <input type="submit"></input>
-  //   </form>
-  // );
 };
 
 export default Login;
