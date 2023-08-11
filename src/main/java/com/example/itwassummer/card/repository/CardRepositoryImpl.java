@@ -2,9 +2,12 @@ package com.example.itwassummer.card.repository;
 
 import static com.example.itwassummer.board.entity.QBoard.board;
 import static com.example.itwassummer.card.entity.QCard.card;
+import static com.example.itwassummer.cardlabel.entity.QCardLabel.cardLabel;
 import static com.example.itwassummer.deck.entity.QDeck.deck;
+import static com.example.itwassummer.label.entity.QLabel.label;
 
 import com.example.itwassummer.card.dto.CardListResponseDto;
+import com.example.itwassummer.card.dto.CardSearchResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -53,6 +56,28 @@ public class CardRepositoryImpl implements CustomCardRepository {
 
     List<CardListResponseDto> responseList = lists.stream().map(
         CardListResponseDto::new
+    ).toList();
+
+    return responseList;
+  }
+
+  @Override
+  public List<CardSearchResponseDto> findAllByLabelId(Long labelId, Pageable pageable) {
+
+    var query = queryFactory.select(card)
+        .from(label)
+        .join(label.cardLabels, cardLabel)
+        .join(cardLabel.card, card)
+        .where(
+            label.id.eq(labelId)
+        ).offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
+        .orderBy(cardSort(pageable));
+
+    var lists = query.fetch();
+
+    List<CardSearchResponseDto> responseList = lists.stream().map(
+        CardSearchResponseDto::new
     ).toList();
 
     return responseList;

@@ -3,6 +3,7 @@ package com.example.itwassummer.card.service;
 import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardSearchResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
@@ -105,8 +106,21 @@ public interface CardService {
    * @param size   페이지별 사이즈
    * @param sortBy 정렬순서
    * @param isAsc  정렬기준 (오름차순, 내림차순)
-   * @return CardResponseDto
+   * @return CommentResponseDto
    */
   List<CommentResponseDto> getCommentList(Long cardId, int page, int size, String sortBy,
+      boolean isAsc);
+
+  /**
+   * 라벨 검색 조회
+   *
+   * @param labelId 라벨검색
+   * @param page   페이지
+   * @param size   페이지별 사이즈
+   * @param sortBy 정렬순서
+   * @param isAsc  정렬기준 (오름차순, 내림차순)
+   * @return CardResponseDto
+   */
+  List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size, String sortBy,
       boolean isAsc);
 }

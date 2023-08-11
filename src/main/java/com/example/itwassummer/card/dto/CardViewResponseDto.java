@@ -2,7 +2,6 @@ package com.example.itwassummer.card.dto;
 
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.cardlabel.dto.CardLabelResponseDto;
-import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.checklist.dto.CheckListResponseDto;
 import com.example.itwassummer.comment.dto.CommentResponseDto;
 import com.example.itwassummer.common.file.S3FileDto;

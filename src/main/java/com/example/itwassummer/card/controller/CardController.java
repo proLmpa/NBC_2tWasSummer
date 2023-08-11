@@ -4,11 +4,11 @@ package com.example.itwassummer.card.controller;
 import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardSearchResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.service.CardService;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.comment.dto.CommentResponseDto;
-import com.example.itwassummer.comment.service.CommentService;
 import com.example.itwassummer.common.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -135,7 +134,7 @@ public class CardController {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @Operation(summary = "댓글 목록 조회", description = "id 값을 통해 삭제")
+  @Operation(summary = "댓글 목록 조회", description = "id 값을 통해 조회")
   @GetMapping("/cards/{cardId}/comments")
   @ResponseBody
   public ResponseEntity commentList(
@@ -151,5 +150,20 @@ public class CardController {
     return new ResponseEntity<>(commentList, HttpStatus.OK);
   }
 
+  @Operation(summary = "라벨 필터검색", description = "id 값을 통해 조회")
+  @GetMapping("/cards/labels/{labelId}")
+  @ResponseBody
+  public ResponseEntity searchLabelList(
+      @PathVariable("labelId") Long labelId,
+      @RequestParam("page") int page,
+      @RequestParam("size") int size,
+      @RequestParam("sortBy") String sortBy,
+      @RequestParam("isAsc") boolean isAsc
+  ) {
+    List<CardSearchResponseDto> cardList = cardService.searchLabelList(labelId,
+        page - 1, size, sortBy, isAsc);
+
+    return new ResponseEntity<>(cardList, HttpStatus.OK);
+  }
 
 }

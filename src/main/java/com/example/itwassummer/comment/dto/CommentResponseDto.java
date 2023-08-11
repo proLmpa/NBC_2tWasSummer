@@ -1,12 +1,8 @@
 package com.example.itwassummer.comment.dto;
 
 import com.example.itwassummer.comment.entity.Comment;
-
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class CommentResponseDto {

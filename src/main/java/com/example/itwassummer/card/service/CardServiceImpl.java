@@ -5,6 +5,7 @@ import com.example.itwassummer.board.repository.BoardRepository;
 import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardSearchResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
@@ -215,6 +216,17 @@ public class CardServiceImpl implements CardService {
     List<CommentResponseDto> commentList = commentRepository.findAllByCard(card, pageable).stream()
         .map(CommentResponseDto::new).toList();
     return commentList;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size, String sortBy,
+      boolean isAsc) {
+    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+    List<CardSearchResponseDto> cardList = cardRepository.findAllByLabelId(labelId, pageable);
+    return cardList;
   }
 
   // 보드가 있는지 확인
