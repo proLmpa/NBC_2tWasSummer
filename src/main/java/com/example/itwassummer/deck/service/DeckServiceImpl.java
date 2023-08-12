@@ -127,7 +127,7 @@ public class DeckServiceImpl implements DeckService {
 	@Transactional(readOnly = true)
 	public List<DeckResponseDto> getDeletedDecks(Long boardId) {
 		Board board = findBoard(boardId);
-		List<Deck> deletedDeckList = deckRepository.findAllByBoardAndIsDeletedTrue(board);
+		List<Deck> deletedDeckList = deckRepository.findAllByBoardAndIsDeletedTrueOrderByModifiedAtDesc(board);
 		if (deletedDeckList.size() == 0) {
 			throw new CustomException(CustomErrorCode.DELETED_DECK_NOT_FOUND, null);
 		}
