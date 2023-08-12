@@ -59,7 +59,6 @@ public class DeckServiceImpl implements DeckService {
 		deck.updateName(name);
 	}
 
-	// 수정이 필요합니다.(테스트 통과 X)
 	@Transactional
 	@Override
 	public List<Long> moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
@@ -122,6 +121,32 @@ public class DeckServiceImpl implements DeckService {
 		}
 		deck.updateParent(null);
 		deck.deleteDeck();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<DeckResponseDto> getDeletedDecks(Long boardId) {
+		Board board = findBoard(boardId);
+		List<Deck> deletedDeckList = deckRepository.findAllByBoardAndIsDeletedTrue(board);
+		if (deletedDeckList.size() == 0) {
+			throw new CustomException(CustomErrorCode.DELETED_DECK_NOT_FOUND, null);
+		}
+		return deletedDeckList.stream().map(DeckResponseDto::new).toList();
+	}
+
+	@Override
+	@Transactional
+	public void restoreDeck(Long deckId) {
+		Deck deck = findDeck(deckId);
+		if (!deck.getIsDeleted()) {
+			throw new CustomException(CustomErrorCode.NOT_DELETED_DECK, null);
+		}
+
+		List<Deck> deckList = deckRepository.findAllDecksByBoardId(deck.getBoard().getId());
+		List<Deck> sortedList = sortDecks(deckList);
+
+		deck.updateParent(sortedList.get(sortedList.size() - 1));
+		deck.restoreDeck();
 	}
 
 	/////////////////////////////////////////////////////////////////

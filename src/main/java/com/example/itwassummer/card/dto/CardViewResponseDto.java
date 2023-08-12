@@ -1,6 +1,7 @@
 package com.example.itwassummer.card.dto;
 
 import com.example.itwassummer.card.entity.Card;
+import com.example.itwassummer.checklist.dto.CheckListResponseDto;
 import com.example.itwassummer.common.file.S3FileDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -8,11 +9,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+// 카드 상세 조회를 위한 응답 dto
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardResponseDto {
+public class CardViewResponseDto {
+  // 카드 이름
+  private Long cardId;
 
   // 카드 이름
   private String name;
@@ -29,14 +33,18 @@ public class CardResponseDto {
   //첨부파일 정보 표시하는 리스트
   private List<S3FileDto> attachment = null;
 
-  /// 등록일
+  // 등록일
   private String createdAt;
 
   // 수정일
   private String modifiedAt;
 
+  //체크리스트 표시하는 리스트
+  private List<CheckListResponseDto> checkLists = null;
+
   // 생성자
-  public CardResponseDto(Card card) {
+  public CardViewResponseDto(Card card) {
+    this.cardId = card.getId();
     this.name = card.getName();
     this.dueDate = String.valueOf(card.getDueDate());
     this.description = card.getDescription();
@@ -44,5 +52,8 @@ public class CardResponseDto {
     this.createdAt = String.valueOf(card.getCreatedAt());
     this.modifiedAt = String.valueOf(card.getModifiedAt());
     this.parentId = card.getParentId();
+    this.checkLists = card.getCheckLists().stream().map(
+        CheckListResponseDto::new
+    ).toList();
   }
 }

@@ -38,4 +38,15 @@ public interface DeckService {
 		@param deckId (덱 삭제 요청 정보)
 	 */
 	void deleteDeck(Long deckId);
+
+	/*
+		@param boardId (삭제된 덱 목록 조회 요청 정보)
+		@return List<DeckResponseDto> (삭제된 덱 목록)
+	 */
+	List<DeckResponseDto> getDeletedDecks(Long boardId);
+
+	/*
+		@param deckId (덱 복구 요청 정보)
+	 */
+	void restoreDeck(Long deckId);
 }
