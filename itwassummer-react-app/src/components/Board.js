@@ -2,6 +2,7 @@ import React from 'react';
 import {useNavigate} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {isLoginSelector, TokenAtom} from "../recoil/TokenAtom";
+import Card from "./Card";
 
 function Board() {
 
@@ -34,6 +35,11 @@ function Board() {
       <button onClick={handleLogoutClick}>LogOut</button>
 
       <div>login상태 : {isLogin ? 'y' : 'n'}</div>
+      <br/><br/>
+
+      <br/>
+      <Card title='타이틀 12' user='wooin'/>
+
     </div>);
 
 
