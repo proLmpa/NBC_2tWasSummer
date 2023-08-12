@@ -134,22 +134,6 @@ public class CardController {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @Operation(summary = "댓글 목록 조회", description = "id 값을 통해 조회")
-  @GetMapping("/cards/{cardId}/comments")
-  @ResponseBody
-  public ResponseEntity commentList(
-      @PathVariable("cardId") Long cardId,
-      @RequestParam("page") int page,
-      @RequestParam("size") int size,
-      @RequestParam("sortBy") String sortBy,
-      @RequestParam("isAsc") boolean isAsc
-  ) {
-    List<CommentResponseDto> commentList = cardService.getCommentList(cardId,
-        page - 1, size, sortBy, isAsc);
-
-    return new ResponseEntity<>(commentList, HttpStatus.OK);
-  }
-
   @Operation(summary = "라벨 필터검색", description = "id 값을 통해 조회")
   @GetMapping("/cards/labels/{labelId}")
   @ResponseBody

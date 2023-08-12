@@ -207,19 +207,6 @@ public class CardServiceImpl implements CardService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<CommentResponseDto> getCommentList(Long cardId, int page, int size, String sortBy,
-      boolean isAsc) {
-    Card card = findCard(cardId);
-    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
-    Sort sort = Sort.by(direction, sortBy);
-    Pageable pageable = PageRequest.of(page, size, sort);
-    List<CommentResponseDto> commentList = commentRepository.findAllByCard(card, pageable).stream()
-        .map(CommentResponseDto::new).toList();
-    return commentList;
-  }
-
-  @Override
-  @Transactional(readOnly = true)
   public List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size, String sortBy,
       boolean isAsc) {
     Direction direction = isAsc ? Direction.ASC : Direction.DESC;

@@ -97,20 +97,6 @@ public interface CardService {
    */
   CardResponseDto moveCard(Long cardId, Long order);
 
-
-  /**
-   * 카드별 댓글 목록 조회
-   *
-   * @param cardId 카드 데이터가 있는지 조회
-   * @param page   페이지
-   * @param size   페이지별 사이즈
-   * @param sortBy 정렬순서
-   * @param isAsc  정렬기준 (오름차순, 내림차순)
-   * @return CommentResponseDto
-   */
-  List<CommentResponseDto> getCommentList(Long cardId, int page, int size, String sortBy,
-      boolean isAsc);
-
   /**
    * 라벨 검색 조회
    *

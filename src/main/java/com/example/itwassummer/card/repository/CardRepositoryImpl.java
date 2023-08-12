@@ -27,7 +27,7 @@ public class CardRepositoryImpl implements CustomCardRepository {
 
   // 추후 재귀 방식으로 다량의 건을 업데이트 할 경우에 성능저하를 최소화 할 수 있도록 개선 필요함
   @Override
-  public int changeOrder(Card selectCard, long order) {
+  public void changeOrder(Card selectCard, long order) {
 
     // 바꾸려는 숫자보다 같거나 크면 +1
     queryFactory.update(card)
@@ -36,7 +36,6 @@ public class CardRepositoryImpl implements CustomCardRepository {
             .or(card.parentId.eq(order))
         )
         .execute();
-    return 1;
   }
 
   @Override

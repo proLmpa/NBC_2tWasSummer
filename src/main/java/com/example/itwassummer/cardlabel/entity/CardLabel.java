@@ -26,7 +26,6 @@ public class CardLabel {
 
     public CardLabel(Card card, Label label) {
         this.card = card;
-        card.getCardLabels().add(this);
         this.label = label;
     }
 
