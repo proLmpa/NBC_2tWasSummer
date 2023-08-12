@@ -1,10 +1,14 @@
 package com.example.itwassummer.deck.entity;
 
 import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +30,9 @@ public class Deck extends Timestamped {
 	@JoinColumn(name = "parent_id")
 	private Deck parent;
 
+//	@OneToMany(mappedBy = "deck")
+//	private List<Card> cardList = new ArrayList<>();
+
 	private Boolean isDeleted = false;
 
 	public Deck(String name, Board board) {
@@ -43,5 +50,9 @@ public class Deck extends Timestamped {
 
 	public void deleteDeck() {
 		this.isDeleted = true;
+	}
+
+	public void restoreDeck() {
+		this.isDeleted = false;
 	}
 }
