@@ -45,10 +45,11 @@ const Login = () => {
       document.cookie = `Authorization=${token}; path=/`;
 
     } catch (e) {
-      alert(e.message)
+      console.log(e.message)
+      alert('로그인 실패')
     }
     // 이후 이동
-    navigate('/board')
+    // navigate('/board')
   };
 
   const handleSignupClick = () => {
