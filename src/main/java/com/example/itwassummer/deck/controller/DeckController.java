@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.LongSummaryStatistics;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,8 +69,16 @@ public class DeckController {
 
 	@Operation(summary = "삭제된 Deck 조회(복구 목록)", description = "boardId에 맞는 보드에서 삭제된 덱들을 조회합니다.")
 	@GetMapping("/decks/deleted")
-	public ResponseEntity<DeckResponseDto> getDeletedDecks(@RequestParam Long boardId) {
-		return null;
+	public ResponseEntity<List<DeckResponseDto>> getDeletedDecks(@RequestParam Long boardId) {
+		List<DeckResponseDto> responseDtoList = deckService.getDeletedDecks(boardId);
+		return ResponseEntity.ok().body(responseDtoList);
+	}
+
+	@Operation(summary = "Deck 복구", description = "deckId에 맞는 Deck을 조회하여 복구합니다.")
+	@PatchMapping("/decks/{deckId}/restoration")
+	public ResponseEntity<ApiResponseDto> restoreDeck(@PathVariable Long deckId) {
+		deckService.restoreDeck(deckId);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Deck 복구 완료"));
 	}
 
 }
