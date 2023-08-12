@@ -5,7 +5,6 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Board from "./components/Board";
-import ProtectedRoute from "./Routes/ProtectedRoute";
 import Home from "./components/Home";
 
 
@@ -18,11 +17,11 @@ function App() {
         <Route exact path="/" element={<Home/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/board" element={<Board/>}/>
 
         {/*유저전용 페이지들*/}
-        <Route element={<ProtectedRoute/>}>
-          <Route path="/board" element={<Board/>}/>
-        </Route>
+        {/*<Route element={<ProtectedRoute/>}>*/}
+        {/*</Route>*/}
       </Routes>
     </BrowserRouter>
   );

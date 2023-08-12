@@ -1,6 +1,6 @@
 // src/components/Login.js
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {useRecoilState, useRecoilValue} from "recoil";
@@ -23,33 +23,39 @@ const Login = () => {
 
 /////////////////////////////////
 
-
-  if (isLogin) {
-    navigate('/board')
-    // } else {
-    //   navigate('/home')
-  }
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/board')
+    }
+  }, [])
 
 
   // Login 버튼 눌렀을 때 동작
   const handleLogin = async () => {
 
-    const response = await axios.post('http://localhost:8080/api/users/login', {email, password});
-    const token = response.headers['authorization'];
+    try {
+      const response = await axios.post('http://localhost:8080/api/users/login', {email, password});
+      const token = response.headers['authorization'];
 
-    // recoil에 토큰 값 담기
-    setAccessToken(token)
-    console.log('getToken값 잘 저장되어있나 ' + getAccessToken)
+      // recoil에 토큰 값 담기
+      setAccessToken(token)
+      console.log('getToken값 잘 저장되어있나 ', getAccessToken)
 
-    // 쿠키에 값 담기 키는 jwtToken으로 설정하고 있다
-    document.cookie = `jwtToken=${token}; path=/`;
+      // 쿠키에 값 담기 키는 jwtToken으로 설정하고 있다
+      document.cookie = `Authorization=${token}; path=/`;
 
+    } catch (e) {
+      alert(e.message)
+    }
     // 이후 이동
     // navigate('/board')
   };
 
   const handleSignupClick = () => {
     navigate('/signup') // v6
+  };
+  const handleHomeClick = () => {
+    navigate('/') // v6
   };
 
 
@@ -73,6 +79,9 @@ const Login = () => {
       />
       <button onClick={handleLogin}>Login</button>
       <button onClick={handleSignupClick}>Go to Signup</button>
+      <button onClick={handleHomeClick}>Go Home</button>
+
+      <p>현재 Token : {getAccessToken}</p>
     </div>
   );
 };

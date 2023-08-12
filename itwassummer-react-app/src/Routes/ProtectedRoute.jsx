@@ -4,7 +4,7 @@ import {isLoginSelector} from "../recoil/TokenAtom";
 
 const ProtectedRoute = () => {
   const isLogin = useRecoilValue(isLoginSelector)
-  return isLogin ? <Outlet/> : <Navigate to={'/signup'} replace={true}/>;
+  return isLogin ? <Outlet/> : <Navigate to={'/login'} replace={true}/>;
 }
 
 
