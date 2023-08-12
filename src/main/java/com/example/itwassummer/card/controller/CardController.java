@@ -150,4 +150,14 @@ public class CardController {
     return new ResponseEntity<>(cardList, HttpStatus.OK);
   }
 
+  @Operation(summary = "카드 위치 수정", description = "덱 id와 카드 id, 정렬순서를 읽어 다른 덱으로 이동")
+  @PutMapping(value = "/decks/{deckId}/cards/{cardId}")
+  public ResponseEntity moveCardToOtherDeck(@PathVariable("deckId") Long deckId,
+      @PathVariable("cardId") Long cardId,
+      @RequestParam("order") Long order
+  ) {
+    CardResponseDto returnDto = cardService.moveCardToOtherDeck(deckId, cardId, order);
+    return new ResponseEntity<>(returnDto, HttpStatus.OK);
+  }
+
 }

@@ -165,9 +165,8 @@ public class CardServiceImpl implements CardService {
   @Transactional
   public List<CardMemberResponseDto> changeCardMembers(Long cardId, String emailList) {
     List<CardMemberResponseDto> result = new ArrayList<>();
-    // 전체삭제
-    // cardMemberRepository.deleteByCardId(cardId);
     Card nowCard = findCard(cardId);
+    // 전체삭제
     nowCard.getCardMembers().clear();
     if (!emailList.isEmpty() && emailList != null) {
       List<String> emailArrays = Arrays.stream(emailList.split(",")).toList();
@@ -207,13 +206,27 @@ public class CardServiceImpl implements CardService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size, String sortBy,
+  public List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size,
+      String sortBy,
       boolean isAsc) {
     Direction direction = isAsc ? Direction.ASC : Direction.DESC;
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
     List<CardSearchResponseDto> cardList = cardRepository.findAllByLabelId(labelId, pageable);
     return cardList;
+  }
+
+  @Override
+  @Transactional
+  public CardResponseDto moveCardToOtherDeck(Long deckId, Long cardId, Long order) {
+    Deck deck = findDeck(deckId);
+    Card card = findCard(cardId);
+    card = card.updateDeckAndParentId(deck, order);
+    // 다른 카드 들의 정렬 순서 변경
+    cardRepository.changeOrder(card, order);
+    CardResponseDto responseDto = new CardResponseDto(card);
+
+    return responseDto;
   }
 
   // 보드가 있는지 확인

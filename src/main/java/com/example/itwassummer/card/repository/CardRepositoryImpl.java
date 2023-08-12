@@ -32,8 +32,9 @@ public class CardRepositoryImpl implements CustomCardRepository {
     // 바꾸려는 숫자보다 같거나 크면 +1
     queryFactory.update(card)
         .set(card.parentId, card.parentId.add(1))
-        .where(card.parentId.gt(order)
-            .or(card.parentId.eq(order))
+        .where((card.parentId.gt(order)
+            .or(card.parentId.eq(order)))
+            .and(card.deck.id.eq(selectCard.getDeck().getId()))
         )
         .execute();
   }

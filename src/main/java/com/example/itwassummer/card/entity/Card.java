@@ -105,4 +105,11 @@ public class Card extends Timestamped {
   public void updateParentId(Long parentId) {
     this.parentId = parentId;
   }
+
+  // 덱 정보와 정렬 순서 변경
+  public Card updateDeckAndParentId(Deck deck, Long parentId) {
+    this.deck = deck;
+    this.parentId = parentId;
+    return this;
+  }
 }

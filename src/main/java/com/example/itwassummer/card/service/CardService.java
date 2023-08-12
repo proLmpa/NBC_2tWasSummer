@@ -109,4 +109,15 @@ public interface CardService {
    */
   List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size, String sortBy,
       boolean isAsc);
+
+  /**
+   * 카드를 다른 덱으로 이동
+   *
+   * @param deckId 카드 id
+   * @param cardId 덱 id
+   * @param order  정렬순서
+   * @return CardResponseDto
+   */
+  CardResponseDto moveCardToOtherDeck(Long deckId, Long cardId, Long order);
+
 }
