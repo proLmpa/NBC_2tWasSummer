@@ -33,25 +33,46 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: MySQL 설치
+        uses: samin/mysql-action@v1
+        with:
+          host port: 3306 # Optional, default value is 3306. The port of host
+          container port: 3307 # Optional, default value is 3306. The port of container
+          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
+          mysql database: test # Optional, default value is "test". The specified database which will be create
+          mysql user: developer # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Of course you can use secrets, too
+          mysql password: ${{ secrets.DB_PASSWORD }}
+
+      - name: yml 파일 생성
+        run: |
+          cd ./src/main/resources
+          rm -rf ./application.properties
+          touch ./application.yml
+          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+        shell: bash
+
       # gradle 실행 허가
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
-      # build Test
-      - name: Build with Gradle
-        run: ./gradlew clean build --exclude-task test # 테스트 코드 없을때
+      - name: 어플리케이션 실행 테스트(테스트 코드X)
+        run: ./gradlew clean build --exclude-task test
 
-      # PR conversation & Action에 몇 개의 테스트 중에 몇 개가 통과 되었는지
-      # 어떤 테스트 파일에서 실패했는지 가르쳐 줌.
-      - name: Publish Test Results
+      # build Test
+      - name: 테스트 코드 실행
+        run: ./gradlew --info test
+
+      - name: 테스트 결과 PR에 코멘트 작성
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        if: always()  # 테스트가 실패했을때만 or 테스트가 성공했을때만 알려주기(여기선 둘다!)
         with:
           files: |
             **/build/test-results/**/*.xml
-
-      # 테스트 파일 내에서 어디에서 테스트가 실패되었는지 가르쳐 줌.
-      # Files changed에서 어디에서 잘못되었는지 가르쳐준다.
+            # 테스트 코드의 result가 담긴 파일인가 봐요 인텔리제이에 생기더라구..?
+            # 테스트 파일 내에서 어디에서 테스트가 실패되었는지 가르쳐 줌.
+          # Files changed에서 어디에서 잘못되었는지 가르쳐준다.
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: success() || failure() # always run even if the previous step fails
