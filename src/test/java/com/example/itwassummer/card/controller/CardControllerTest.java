@@ -1,15 +1,8 @@
 package com.example.itwassummer.card.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.user.dto.LoginRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @SpringBootTest
@@ -42,7 +41,7 @@ public class CardControllerTest {
   void insertCards() throws Exception {
     // given
     String name = "예시카드new";
-    Long parentId = Long.valueOf(5);
+    Long parentId = 5L;
     String description = "예시카드입니다.";
     String header = login();
     LocalDateTime now = LocalDateTime.now();
@@ -72,7 +71,7 @@ public class CardControllerTest {
   void updateCards() throws Exception {
     // given
     String name = "예시카드3";
-    Long parentId = Long.valueOf(1);
+    Long parentId = 1L;
     String description = "예시카드입니다.";
     String header = login();
     LocalDateTime now = LocalDateTime.now();
@@ -105,7 +104,7 @@ public class CardControllerTest {
     String header = login();
 
     // when
-    Long cardId = 15L;
+    long cardId = 15L;
 
     // then
     mvc.perform(delete(BASE_URL + "/" + cardId)
@@ -136,7 +135,6 @@ public class CardControllerTest {
         .andDo(print())
         .andReturn();
 
-    return Objects.requireNonNull(result.getResponse().getHeader("Authorization")).toString();
+    return Objects.requireNonNull(result.getResponse().getHeader("Authorization"));
   }
-
 }
