@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void signup(SignupRequestDto requestDto) {
+    public User signup(SignupRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -52,6 +52,8 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.save(new User(email, password, role));
         userPasswordRepository.save(new UserPassword(password, user));
+
+        return user;
     }
 
     @Transactional
