@@ -6,10 +6,7 @@ import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
 import com.example.itwassummer.userpassword.dto.EditPasswordRequestDto;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +27,10 @@ class UserServiceImplTest {
     @Autowired
     private PasswordEncoder encoder;
 
-    @Test
-    User signUp() {
+    private User user;
+
+    @BeforeEach
+    void signUp() {
         // given
         String email = "user2024@email.com";
         String password = "user123!@#";
@@ -42,14 +41,13 @@ class UserServiceImplTest {
         SignupRequestDto request = new SignupRequestDto(email, password, admin, adminToken);
 
         // when
-        User user = userService.signup(request);
+        User signed = userService.signup(request);
 
         // then
-        Assertions.assertEquals(email, user.getEmail());
-        Assertions.assertTrue(encoder.matches(password, user.getPassword()));
-        Assertions.assertEquals(UserRoleEnum.USER, user.getRole());
-
-        return user;
+        Assertions.assertEquals(email, signed.getEmail());
+        Assertions.assertTrue(encoder.matches(password, signed.getPassword()));
+        Assertions.assertEquals(UserRoleEnum.USER, signed.getRole());
+        user = signed;
     }
 
     @Test
@@ -62,7 +60,7 @@ class UserServiceImplTest {
         EditUserRequestDto requestDto = new EditUserRequestDto(nickname, introduction);
 
         // when
-        User edited = userService.editUserInfo(requestDto, signUp());
+        User edited = userService.editUserInfo(requestDto, user);
 
         // then
         Assertions.assertEquals(nickname, edited.getNickname());
@@ -73,7 +71,6 @@ class UserServiceImplTest {
     @DisplayName("사용자 정보 삭제")
     void deleteUserInfo() {
         // given
-        User user = signUp();
 
         // when
         userService.deleteUserInfo(user.getId(), user);
@@ -93,10 +90,10 @@ class UserServiceImplTest {
         EditPasswordRequestDto correctdto = new EditPasswordRequestDto(password, newPassword1, newPassword2);
 
         // when - 정상 비밀번호 수정
-        User user = userService.editUserPassword(correctdto, signUp());
+        User edited = userService.editUserPassword(correctdto, user);
 
         // then
-        Assertions.assertFalse(encoder.matches(password, user.getPassword()));
-        Assertions.assertTrue(encoder.matches(newPassword1, user.getPassword()));
+        Assertions.assertFalse(encoder.matches(password, edited.getPassword()));
+        Assertions.assertTrue(encoder.matches(newPassword1, edited.getPassword()));
     }
 }
