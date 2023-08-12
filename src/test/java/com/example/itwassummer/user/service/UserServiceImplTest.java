@@ -1,64 +1,39 @@
 package com.example.itwassummer.user.service;
 
-import com.example.itwassummer.common.jwt.JwtUtil;
-import com.example.itwassummer.common.security.UserDetailsServiceImpl;
-import com.example.itwassummer.user.dto.LoginRequestDto;
+import com.example.itwassummer.user.dto.EditUserRequestDto;
 import com.example.itwassummer.user.dto.SignupRequestDto;
 import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.entity.UserRoleEnum;
 import com.example.itwassummer.user.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import com.example.itwassummer.userpassword.dto.EditPasswordRequestDto;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 class UserServiceImplTest {
-    @Autowired
-    private ObjectMapper mapper;
-    @Autowired
-    private MockMvc mvc;
 
     @Autowired
     private UserServiceImpl userService;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder encoder;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-
-//    @BeforeEach
-//    void setUp(WebApplicationContext webApplicationContext) {
-//        this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-//                .addFilters(new CharacterEncodingFilter("UTF-8", true)) // 필터 추가
-//                .addFilters(new JwtAuthorizationFilter(jwtUtil, userDetailsService), new JwtAuthorizationFilter(jwtUtil, userDetailsService))
-//                .build();
-//    }
-
-    @BeforeAll
-    void signUp() {
+    @Test
+    User signUp() {
         // given
-        String email = "user2023@email.com";
+        String email = "user2024@email.com";
         String password = "user123!@#";
         boolean admin = false;
         String adminToken = "";
@@ -73,30 +48,55 @@ class UserServiceImplTest {
         Assertions.assertEquals(email, user.getEmail());
         Assertions.assertTrue(encoder.matches(password, user.getPassword()));
         Assertions.assertEquals(UserRoleEnum.USER, user.getRole());
+
+        return user;
     }
 
     @Test
-    @DisplayName("로그인")
-    void login() throws Exception {
+    @DisplayName("사용자 정보 수정")
+    void editUserInfo() {
         // given
-        String email = "user2023@email.com";
-        String password = "user123!@#";
+        String nickname = "I'm Owl";
+        String introduction = "This is my child owo";
+
+        EditUserRequestDto requestDto = new EditUserRequestDto(nickname, introduction);
 
         // when
-        LoginRequestDto requestDto = new LoginRequestDto();
-        requestDto.setEmail(email);
-        requestDto.setPassword(password);
+        User edited = userService.editUserInfo(requestDto, signUp());
 
-        String body = mapper.writeValueAsString(requestDto);
         // then
-        MvcResult result = mvc.perform(post("/api/users/login")
-                        .content(body)
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andReturn();
-
-        Assertions.assertEquals("Bearer", Objects.requireNonNull(result.getResponse().getHeader("Authorization")).substring(0, 6));
+        Assertions.assertEquals(nickname, edited.getNickname());
+        Assertions.assertEquals(introduction, edited.getIntroduction());
     }
 
+    @Test
+    @DisplayName("사용자 정보 삭제")
+    void deleteUserInfo() {
+        // given
+        User user = signUp();
+
+        // when
+        userService.deleteUserInfo(user.getId(), user);
+
+        // then
+        Assertions.assertNull(userRepository.findById(user.getId()).orElse(null));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정")
+    void editUserPassword() {
+        // given
+        String password = "user123!@#";
+        String newPassword1 = "user234@#$";
+        String newPassword2 = "user234@#$";
+
+        EditPasswordRequestDto correctdto = new EditPasswordRequestDto(password, newPassword1, newPassword2);
+
+        // when - 정상 비밀번호 수정
+        User user = userService.editUserPassword(correctdto, signUp());
+
+        // then
+        Assertions.assertFalse(encoder.matches(password, user.getPassword()));
+        Assertions.assertTrue(encoder.matches(newPassword1, user.getPassword()));
+    }
 }

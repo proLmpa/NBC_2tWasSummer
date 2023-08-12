@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void editUserPassword(EditPasswordRequestDto requestDto, User user) {
+    public User editUserPassword(EditPasswordRequestDto requestDto, User user) {
         User found = findUser(user.getId());
 
         checkPassword(requestDto.getPassword(), found.getPassword());
@@ -97,6 +97,8 @@ public class UserServiceImpl implements UserService {
         String newPassword = passwordEncoder.encode(requestDto.getNewPassword1());
         userPasswordRepository.save(new UserPassword(newPassword, found));
         found.editPassword(newPassword);
+
+        return found;
     }
 
     private User findUserByEmail(String email) {

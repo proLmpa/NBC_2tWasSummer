@@ -32,6 +32,7 @@ public interface UserService {
      * 유저 비밀번호 수정
      * @param requestDto 사용자 비밀번호 수정을 위한 요청 정보
      * @param user 수정할 정보를 소유하고 있는 사용자 본인에 대한 정보
+     * @return user 비밀번호 수정한 사용자 정보 반환
      */
-    void editUserPassword(EditPasswordRequestDto requestDto, User user);
+    User editUserPassword(EditPasswordRequestDto requestDto, User user);
 }
