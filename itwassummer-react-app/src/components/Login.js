@@ -27,7 +27,7 @@ const Login = () => {
     if (isLogin) {
       navigate('/board')
     }
-  }, [])
+  }, [getAccessToken])
 
 
   // Login 버튼 눌렀을 때 동작
@@ -48,7 +48,7 @@ const Login = () => {
       alert(e.message)
     }
     // 이후 이동
-    // navigate('/board')
+    navigate('/board')
   };
 
   const handleSignupClick = () => {
