@@ -9,6 +9,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -49,5 +52,9 @@ public class Deck extends Timestamped {
 
 	public void deleteDeck() {
 		this.isDeleted = true;
+	}
+
+	public void restoreDeck() {
+		this.isDeleted = false;
 	}
 }
