@@ -74,13 +74,8 @@ public class DeckServiceTest {
 	@Order(3)
 	@DisplayName("Deck 생성")
 	void createDeckTest() {
-
 		List<Board> boardList = boardRepository.findAll();
 		boardId = boardList.get(0).getId();
-		System.out.println("===================================================");
-		System.out.println(boardId);
-
-		System.out.println("===================================================");
 
 		String deckName1 = "Test-Deck-1";
 		String deckName2 = "Test-Deck-2";
@@ -123,10 +118,10 @@ public class DeckServiceTest {
 		// 1234 -> 2314
 	void moveDeckTest1() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(3L).build();
+				.boardId(boardId).parentId(3L).build();
 		List<Long> longList = deckService.moveDeck(1L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(2, deckList.get(1).getParent().getId());
 		assertEquals(3, deckList.get(2).getParent().getId());
@@ -139,10 +134,10 @@ public class DeckServiceTest {
 		// 2314 -> 3142
 	void moveDeckTest2() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(4L).build();
+				.boardId(boardId).parentId(4L).build();
 		List<Long> longList = deckService.moveDeck(2L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(3, deckList.get(1).getParent().getId());
 		assertEquals(1, deckList.get(2).getParent().getId());
@@ -155,10 +150,10 @@ public class DeckServiceTest {
 		// 3142 -> 4312
 	void moveDeckTest3() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(0L).build();
+				.boardId(boardId).parentId(0L).build();
 		List<Long> longList = deckService.moveDeck(4L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(4, deckList.get(1).getParent().getId());
 		assertEquals(3, deckList.get(2).getParent().getId());
@@ -172,10 +167,10 @@ public class DeckServiceTest {
 		// 4312 -> 4132
 	void moveDeckTest4() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(1L).build();
+				.boardId(boardId).parentId(1L).build();
 		List<Long> longList = deckService.moveDeck(3L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(4, deckList.get(1).getParent().getId());
 		assertEquals(1, deckList.get(2).getParent().getId());
@@ -188,10 +183,10 @@ public class DeckServiceTest {
 		// 4132 -> 4321
 	void moveDeckTest5() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(2L).build();
+				.boardId(boardId).parentId(2L).build();
 		List<Long> longList = deckService.moveDeck(1L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(4, deckList.get(1).getParent().getId());
 		assertEquals(3, deckList.get(2).getParent().getId());
@@ -204,10 +199,10 @@ public class DeckServiceTest {
 		// 4321 -> 1432
 	void moveDeckTest6() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(0L).build();
+				.boardId(boardId).parentId(0L).build();
 		List<Long> longList = deckService.moveDeck(1L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(1, deckList.get(1).getParent().getId());
 		assertEquals(4, deckList.get(2).getParent().getId());
@@ -220,10 +215,10 @@ public class DeckServiceTest {
 		// 1432 -> 1243
 	void moveDeckTest7() {
 		DeckMoveRequestDto requestDto = DeckMoveRequestDto.builder()
-				.boardId(1L).parentId(1L).build();
+				.boardId(boardId).parentId(1L).build();
 		List<Long> longList = deckService.moveDeck(2L, requestDto);
 		deckService.updateParent(longList);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(1, deckList.get(1).getParent().getId());
 		assertEquals(2, deckList.get(2).getParent().getId());
@@ -238,9 +233,9 @@ public class DeckServiceTest {
 		String deckName5 = "Test-Deck-5";
 		String deckName6 = "Test-Deck-6";
 		String deckName7 = "Test-Deck-7";
-		DeckResponseDto responseDto5 = deckService.createDeck(1L, deckName5);
-		DeckResponseDto responseDto6 = deckService.createDeck(1L, deckName6);
-		DeckResponseDto responseDto7 = deckService.createDeck(1L, deckName7);
+		DeckResponseDto responseDto5 = deckService.createDeck(boardId, deckName5);
+		DeckResponseDto responseDto6 = deckService.createDeck(boardId, deckName6);
+		DeckResponseDto responseDto7 = deckService.createDeck(boardId, deckName7);
 
 		assertEquals(5, responseDto5.getId());
 		assertEquals(6, responseDto6.getId());
@@ -259,7 +254,7 @@ public class DeckServiceTest {
 		// 1243567 -> 243567
 	void deleteDeckTest1() {
 		deckService.deleteDeck(1L);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(2, deckList.get(1).getParent().getId());
 		assertEquals(4, deckList.get(2).getParent().getId());
@@ -274,7 +269,7 @@ public class DeckServiceTest {
 		// 243567 -> 24367
 	void deleteDeckTest2() {
 		deckService.deleteDeck(5L);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(2, deckList.get(1).getParent().getId());
 		assertEquals(4, deckList.get(2).getParent().getId());
@@ -288,7 +283,7 @@ public class DeckServiceTest {
 		// 24367 -> 2436
 	void deleteDeckTest3() {
 		deckService.deleteDeck(7L);
-		List<Deck> deckList = findAllSortedDecksNotDeleted(1L);
+		List<Deck> deckList = findAllSortedDecksNotDeleted(boardId);
 		assertNull(deckList.get(0).getParent());
 		assertEquals(2, deckList.get(1).getParent().getId());
 		assertEquals(4, deckList.get(2).getParent().getId());
@@ -300,7 +295,7 @@ public class DeckServiceTest {
 	@DisplayName("Deck 전체 조회")
 		// 2436
 	void getAllDecksTest() {
-		List<DeckResponseDto> responseDtoList = deckService.getAllDecks(1L);
+		List<DeckResponseDto> responseDtoList = deckService.getAllDecks(boardId);
 		assertEquals(2, responseDtoList.get(0).getId());
 		assertEquals(4, responseDtoList.get(1).getId());
 		assertEquals(3, responseDtoList.get(2).getId());
@@ -321,7 +316,7 @@ public class DeckServiceTest {
 	@DisplayName("삭제된 Deck 조회")
 		// 751
 	void getDeletedDecksTest() {
-		List<DeckResponseDto> responseDtoList = deckService.getDeletedDecks(1L);
+		List<DeckResponseDto> responseDtoList = deckService.getDeletedDecks(boardId);
 
 		assertEquals(0, responseDtoList.get(0).getParentId());
 		assertEquals(0, responseDtoList.get(1).getParentId());
@@ -344,7 +339,7 @@ public class DeckServiceTest {
 	@DisplayName("덱 복구 후 다시 삭제된 Deck 조회")
 		// 73
 	void getDeletedDecksTest2() {
-		List<DeckResponseDto> responseDtoList = deckService.getDeletedDecks(1L);
+		List<DeckResponseDto> responseDtoList = deckService.getDeletedDecks(boardId);
 
 		assertEquals(7, responseDtoList.get(0).getId());
 		assertEquals(1, responseDtoList.get(1).getId());
