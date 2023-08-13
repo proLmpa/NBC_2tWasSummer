@@ -77,7 +77,7 @@ public class DeckServiceTest {
 
 		List<Board> boardList = boardRepository.findAll();
 		boardId = boardList.get(0).getId();
-		System.out.println("==================================================");
+		System.out.println("===================================================");
 		System.out.println(boardId);
 
 		System.out.println("===================================================");
