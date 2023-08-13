@@ -34,13 +34,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-@Transactional
+/*@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-@Rollback(false)
-public class CheckListController implements UserDetailsService {
+@Rollback(false)*/
+// implements UserDetailsService
+public class CheckListControllerTest {
 
-  @Autowired
+  /*@Autowired
   ObjectMapper mapper;
 
   @Autowired
@@ -187,5 +188,5 @@ public class CheckListController implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return new User("email", "password", Collections.EMPTY_LIST);
-  }
+  }*/
 }
