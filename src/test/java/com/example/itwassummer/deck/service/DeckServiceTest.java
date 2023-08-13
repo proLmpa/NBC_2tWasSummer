@@ -43,8 +43,6 @@ public class DeckServiceTest {
 	private DeckServiceImpl deckService;
 	@Autowired
 	private DeckRepository deckRepository;
-
-	Board board = null;
 	User user = null;
 
 	@Test
@@ -56,20 +54,19 @@ public class DeckServiceTest {
 		SignupRequestDto requestDto = SignupRequestDto.builder()
 				.email(email).password(password).build();
 		userService.signup(requestDto);
-		user = userRepository.findById(1L).orElse(null);
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("Board 생성")
 	void createBoardTest() {
+		user = userRepository.findById(1L).orElse(null);
 		BoardRequestDto requestDto = BoardRequestDto.builder()
 				.name("TestBoard")
 				.color("red")
 				.description("This is Test Board")
 				.build();
 		boardService.createBoard(requestDto, user);
-		board = boardRepository.findById(1L).orElse(null);
 	}
 
 	@Test
