@@ -60,7 +60,7 @@ public class DeckServiceTest {
 	@Order(2)
 	@DisplayName("Board 생성")
 	void createBoardTest() {
-		user = userRepository.findById(1L).orElse(null);
+		user = userRepository.findByEmail("test-user@summer.com").orElse(null);
 		BoardRequestDto requestDto = BoardRequestDto.builder()
 				.name("TestBoard")
 				.color("red")
