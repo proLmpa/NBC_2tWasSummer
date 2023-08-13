@@ -44,6 +44,7 @@ public class DeckServiceTest {
 	@Autowired
 	private DeckRepository deckRepository;
 	User user = null;
+	Long boardId = null;
 
 	@Test
 	@Order(1)
@@ -73,15 +74,19 @@ public class DeckServiceTest {
 	@Order(3)
 	@DisplayName("Deck 생성")
 	void createDeckTest() {
+
+		List<Board> boardList = boardRepository.findAll();
+		boardId = boardList.get(0).getId();
+
 		String deckName1 = "Test-Deck-1";
 		String deckName2 = "Test-Deck-2";
 		String deckName3 = "Test-Deck-3";
 		String deckName4 = "Test-Deck-4";
 
-		DeckResponseDto responseDto1 = deckService.createDeck(1L, deckName1);
-		DeckResponseDto responseDto2 = deckService.createDeck(1L, deckName2);
-		DeckResponseDto responseDto3 = deckService.createDeck(1L, deckName3);
-		DeckResponseDto responseDto4 = deckService.createDeck(1L, deckName4);
+		DeckResponseDto responseDto1 = deckService.createDeck(boardId, deckName1);
+		DeckResponseDto responseDto2 = deckService.createDeck(boardId, deckName2);
+		DeckResponseDto responseDto3 = deckService.createDeck(boardId, deckName3);
+		DeckResponseDto responseDto4 = deckService.createDeck(boardId, deckName4);
 
 		assertNotNull(responseDto1.getId());
 		assertNotNull(responseDto2.getId());
