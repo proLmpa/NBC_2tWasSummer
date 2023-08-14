@@ -1,7 +1,11 @@
 package com.example.itwassummer.card.service;
 
+import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.board.repository.BoardRepository;
+import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardSearchResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
@@ -9,10 +13,14 @@ import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
 import com.example.itwassummer.cardmember.entity.CardMember;
 import com.example.itwassummer.cardmember.repository.CardMemberRepository;
 import com.example.itwassummer.checklist.service.CheckListService;
+import com.example.itwassummer.comment.dto.CommentResponseDto;
+import com.example.itwassummer.comment.repository.CommentRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
 import com.example.itwassummer.common.file.FileUploader;
 import com.example.itwassummer.common.file.S3FileDto;
+import com.example.itwassummer.deck.entity.Deck;
+import com.example.itwassummer.deck.repository.DeckRepository;
 import com.example.itwassummer.user.entity.User;
 import com.example.itwassummer.user.repository.UserRepository;
 import java.io.IOException;
@@ -22,6 +30,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +52,24 @@ public class CardServiceImpl implements CardService {
 
   private final CheckListService checkListService;
 
+  private final CommentRepository commentRepository;
+
+  private final DeckRepository deckRepository;
+
+  private final BoardRepository boardRepository;
+
+  @Override
+  public List<CardListResponseDto> getCardList(Long boardId, int page, int size, String sortBy,
+      boolean isAsc) {
+    Board board = findBoard(boardId);
+
+    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+    List<CardListResponseDto> lists = cardRepository.findAllByBoardId(boardId, pageable);
+    return lists;
+  }
+
   @Override
   @Transactional(readOnly = true)
   public CardViewResponseDto getCard(Long cardId) {
@@ -53,6 +83,8 @@ public class CardServiceImpl implements CardService {
   public CardResponseDto save(CardRequestDto requestDto, List<MultipartFile> files)
       throws IOException {
 
+    Deck deck = findDeck(requestDto.getDeckId());
+
     // 파일 등록
     List<S3FileDto> fileDtoList = null;
     if (!(files == null || (files.size() == 1 && files.get(0).isEmpty()))) {
@@ -62,6 +94,7 @@ public class CardServiceImpl implements CardService {
 
     Card card = Card.builder()
         .requestDto(requestDto)
+        .deck(deck)
         .build();
     Card returnCard = cardRepository.save(card);
     CardResponseDto responseDto = new CardResponseDto(returnCard);
@@ -132,9 +165,8 @@ public class CardServiceImpl implements CardService {
   @Transactional
   public List<CardMemberResponseDto> changeCardMembers(Long cardId, String emailList) {
     List<CardMemberResponseDto> result = new ArrayList<>();
-    // 전체삭제
-    // cardMemberRepository.deleteByCardId(cardId);
     Card nowCard = findCard(cardId);
+    // 전체삭제
     nowCard.getCardMembers().clear();
     if (!emailList.isEmpty() && emailList != null) {
       List<String> emailArrays = Arrays.stream(emailList.split(",")).toList();
@@ -170,5 +202,43 @@ public class CardServiceImpl implements CardService {
     card.updateParentId(order);
     CardResponseDto responseDto = new CardResponseDto(card);
     return responseDto;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<CardSearchResponseDto> searchLabelList(Long labelId, int page, int size,
+      String sortBy,
+      boolean isAsc) {
+    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+    List<CardSearchResponseDto> cardList = cardRepository.findAllByLabelId(labelId, pageable);
+    return cardList;
+  }
+
+  @Override
+  @Transactional
+  public CardResponseDto moveCardToOtherDeck(Long deckId, Long cardId, Long order) {
+    Deck deck = findDeck(deckId);
+    Card card = findCard(cardId);
+    card = card.updateDeckAndParentId(deck, order);
+    // 다른 카드 들의 정렬 순서 변경
+    cardRepository.changeOrder(card, order);
+    CardResponseDto responseDto = new CardResponseDto(card);
+
+    return responseDto;
+  }
+
+  // 보드가 있는지 확인
+  private Board findBoard(Long boardId) {
+    return boardRepository.findById(boardId).orElseThrow(()
+        -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
+  }
+
+  // 덱이 있는지 확인
+  private Deck findDeck(Long id) {
+    return deckRepository.findById(id).orElseThrow(() ->
+        new CustomException(CustomErrorCode.DECK_NOT_FOUND, null)
+    );
   }
 }

@@ -31,6 +31,9 @@ public class CardRequestDto {
   // 정렬순서
   private Long parentId;
 
+  // 덱id
+  private Long deckId;
+
   // 첨부파일
   @Setter
   private List<S3FileDto> attachment;

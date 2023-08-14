@@ -1,8 +1,11 @@
 package com.example.itwassummer.label.entity;
 
 import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.label.dto.LabelRequestDto;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +25,9 @@ public class Label {
 
     @Column
     private String color;
+
+    @OneToMany(mappedBy = "label", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CardLabel> cardLabels = new ArrayList<>();
 
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
     public Label(Long id, String title, String color) {

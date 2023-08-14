@@ -1,11 +1,14 @@
 package com.example.itwassummer.card.controller;
 
 
+import com.example.itwassummer.card.dto.CardListResponseDto;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardSearchResponseDto;
 import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.service.CardService;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
+import com.example.itwassummer.comment.dto.CommentResponseDto;
 import com.example.itwassummer.common.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,9 +44,22 @@ public class CardController {
 
   private final CardService cardService;
 
+  @Operation(summary = "카드 전체조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
+  @GetMapping(value = "/cardLists")
+  @ResponseBody
+  public ResponseEntity list(@RequestParam Long boardId,
+      @RequestParam("page") int page,
+      @RequestParam("size") int size,
+      @RequestParam("sortBy") String sortBy,
+      @RequestParam("isAsc") boolean isAsc) {
+    List<CardListResponseDto> responseDto = cardService.getCardList(boardId,
+        page - 1, size, sortBy, isAsc);
+    return new ResponseEntity<>(responseDto, HttpStatus.OK);
+  }
+
 
   @Operation(summary = "카드 상세조회", description = "카드 id를 넘겨 받아 카드의 상세 정보를 표시")
-  @GetMapping(value ="/cards/{cardId}")
+  @GetMapping(value = "/cards/{cardId}")
   @ResponseBody
   public ResponseEntity view(@PathVariable("cardId") Long cardId) {
     CardViewResponseDto responseDto = cardService.getCard(cardId);
@@ -64,7 +80,8 @@ public class CardController {
   @PutMapping(value = "/cards/{cardId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
       MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity updateCard(@PathVariable("cardId") Long cardId,
-      @Valid @RequestPart CardRequestDto requestDto, @RequestPart(required = false) List<MultipartFile> files
+      @Valid @RequestPart CardRequestDto requestDto,
+      @RequestPart(required = false) List<MultipartFile> files
   ) throws IOException {
     CardResponseDto returnDto = cardService.update(cardId, requestDto, files);
     return new ResponseEntity<>(returnDto, HttpStatus.OK);
@@ -86,7 +103,8 @@ public class CardController {
   )
       throws ParseException {
 
-    SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //검증할 날짜 포맷 설정
+    SimpleDateFormat dateFormatParser = new SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss"); //검증할 날짜 포맷 설정
     dateFormatParser.setLenient(false); //false일경우 처리시 입력한 값이 잘못된 형식일 시 오류가 발생
     dateFormatParser.parse(dueDate); //대상 값 포맷에 적용되는지 확인
 
@@ -116,17 +134,30 @@ public class CardController {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @Operation(summary = "댓글 목록 조회", description = "id 값을 통해 삭제")
-  @GetMapping("/cards/{cardId}/comments")
+  @Operation(summary = "라벨 필터검색", description = "id 값을 통해 조회")
+  @GetMapping("/cards/labels/{labelId}")
   @ResponseBody
-  public ResponseEntity list(
+  public ResponseEntity searchLabelList(
+      @PathVariable("labelId") Long labelId,
       @RequestParam("page") int page,
       @RequestParam("size") int size,
       @RequestParam("sortBy") String sortBy,
       @RequestParam("isAsc") boolean isAsc
   ) {
-    return null;
+    List<CardSearchResponseDto> cardList = cardService.searchLabelList(labelId,
+        page - 1, size, sortBy, isAsc);
+
+    return new ResponseEntity<>(cardList, HttpStatus.OK);
   }
 
+  @Operation(summary = "카드 위치 수정", description = "덱 id와 카드 id, 정렬순서를 읽어 다른 덱으로 이동")
+  @PutMapping(value = "/decks/{deckId}/cards/{cardId}")
+  public ResponseEntity moveCardToOtherDeck(@PathVariable("deckId") Long deckId,
+      @PathVariable("cardId") Long cardId,
+      @RequestParam("order") Long order
+  ) {
+    CardResponseDto returnDto = cardService.moveCardToOtherDeck(deckId, cardId, order);
+    return new ResponseEntity<>(returnDto, HttpStatus.OK);
+  }
 
 }
