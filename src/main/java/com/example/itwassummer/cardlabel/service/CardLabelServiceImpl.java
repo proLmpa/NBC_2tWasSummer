@@ -23,13 +23,16 @@ public class CardLabelServiceImpl implements CardLabelService {
     @Override
     @Transactional
     public String createCardLabel(Long cardId, Long labelId) {
-
         Card card = cardRepository.findById(cardId).orElseThrow(()
                 -> new CustomException(CustomErrorCode.CARD_NOT_FOUND, null));
         Label label = labelRepository.findById(labelId).orElseThrow(()
                 -> new CustomException(CustomErrorCode.LABEL_NOT_FOUND, null));
 
-        CardLabel cardLabel = new CardLabel(card, label);
+        CardLabel cardLabel = cardLabelRepository.findByCard_IdAndLabel_Id(cardId, labelId).orElse(null);
+        if(cardLabel != null)
+            throw new CustomException(CustomErrorCode.LABEL_ALREADY_EXISTS, null);
+
+        cardLabel = new CardLabel(card, label);
         cardLabelRepository.save(cardLabel);
 
         return "카드에 라벨 등록 완료";
@@ -38,8 +41,9 @@ public class CardLabelServiceImpl implements CardLabelService {
     @Override
     @Transactional
     public String deleteCardLabel(Long cardId, Long labelId) {
-
-        CardLabel cardLabel = cardLabelRepository.findByCard_IdAndLabel_Id(cardId, labelId);
+        CardLabel cardLabel = cardLabelRepository.findByCard_IdAndLabel_Id(cardId, labelId).orElseThrow(
+                () -> new CustomException(CustomErrorCode.LABEL_NOT_FOUND, null)
+        );
         cardLabelRepository.delete(cardLabel);
 
         return "라벨 해제 완료";
