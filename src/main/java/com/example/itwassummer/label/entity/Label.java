@@ -26,9 +26,6 @@ public class Label {
     @Column
     private String color;
 
-    @OneToMany(mappedBy = "label", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CardLabel> cardLabels = new ArrayList<>();
-
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
     public Label(Long id, String title, String color) {
         this.id = id;
@@ -45,6 +42,9 @@ public class Label {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
+    @OneToMany(mappedBy = "label", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CardLabel> cardLabels = new ArrayList<>();
 
     ////연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
     public void setBoard(Board board) {

@@ -1,18 +1,12 @@
 package com.example.itwassummer.card.service;
 
-import com.example.itwassummer.card.dto.CardListResponseDto;
-import com.example.itwassummer.card.dto.CardRequestDto;
-import com.example.itwassummer.card.dto.CardResponseDto;
-import com.example.itwassummer.card.dto.CardSearchResponseDto;
-import com.example.itwassummer.card.dto.CardViewResponseDto;
+import com.example.itwassummer.card.dto.*;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
-import com.example.itwassummer.comment.dto.CommentResponseDto;
-import com.example.itwassummer.common.security.UserDetailsImpl;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.web.multipart.MultipartFile;
 
 
 public interface CardService {
@@ -57,7 +51,6 @@ public interface CardService {
    * 카드 삭제
    *
    * @param cardId 카드 등록 요청 정보
-   * @return
    */
   void delete(Long cardId);
 

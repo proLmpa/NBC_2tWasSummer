@@ -33,7 +33,7 @@ public class LabelServiceImpl implements LabelService {
     @Transactional
     public LabelResponseDto createLabel(LabelRequestDto requestDto, Long boardId) {
         Board board = findBoard(boardId);
-        findDuplicateLabel(requestDto.getTitle());
+        findDuplicateLabel(requestDto.getTitle(), boardId);
 
         Label label = new Label(requestDto);
         label.setBoard(board);
@@ -45,9 +45,9 @@ public class LabelServiceImpl implements LabelService {
     @Override
     @Transactional
     public LabelResponseDto editLabel(Long labelId, LabelRequestDto requestDto) {
-        findDuplicateLabel(requestDto.getTitle());
-
         Label label = findLabel(labelId);
+        findDuplicateLabel(requestDto.getTitle(), label.getBoard().getId());
+
         label.editLabel(requestDto);
 
         return new LabelResponseDto(label);
@@ -65,9 +65,11 @@ public class LabelServiceImpl implements LabelService {
                 new CustomException(CustomErrorCode.BOARD_NOT_FOUND, null));
     }
 
-    private void findDuplicateLabel(String title) {
-        if(labelRepository.existsByTitle(title))
-                throw new CustomException(CustomErrorCode.LABEL_ALREADY_EXISTS, null);
+    private void findDuplicateLabel(String title, Long boardId) {
+        long cnt = labelRepository.findByTitle(title).stream().filter(label ->
+                label.getBoard().getId().equals(boardId)
+                ).count();
+        if (cnt > 0) throw new CustomException(CustomErrorCode.LABEL_ALREADY_EXISTS, null);
     }
 
     private Label findLabel(Long labelId) {

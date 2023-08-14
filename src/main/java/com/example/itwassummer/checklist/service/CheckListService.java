@@ -2,7 +2,6 @@ package com.example.itwassummer.checklist.service;
 
 import com.example.itwassummer.checklist.dto.CheckListRequestDto;
 import com.example.itwassummer.checklist.dto.CheckListResponseDto;
-import java.io.IOException;
 
 public interface CheckListService {
 
@@ -31,7 +30,6 @@ public interface CheckListService {
   /**
    * 체크리스트 삭제
    * @param listId 체크리스트 등록 요청 정보
-   * @return
    */
   void delete(Long listId);
 

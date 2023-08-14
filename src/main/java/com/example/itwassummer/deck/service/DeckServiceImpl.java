@@ -29,7 +29,7 @@ public class DeckServiceImpl implements DeckService {
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
 		Deck deck = new Deck(name, board);
 		deckRepository.save(deck);
-		if (deckList.size() != 0) {
+		if (!deckList.isEmpty()) {
 			List<Deck> deckSortedList = sortDecks(deckList);
 			deck.updateParent(deckSortedList.get(deckSortedList.size() - 1));
 		}
@@ -39,7 +39,7 @@ public class DeckServiceImpl implements DeckService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<DeckResponseDto> getAllDecks(Long boardId) {
-		Board board = findBoard(boardId);
+		findBoard(boardId);
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(boardId);
 		List<Deck> deckLinkedList = sortDecks(deckList);
 		return deckLinkedList.stream().map(DeckResponseDto::new).toList();
@@ -62,7 +62,7 @@ public class DeckServiceImpl implements DeckService {
 	@Transactional
 	@Override
 	public List<Long> moveDeck(Long deckId, DeckMoveRequestDto requestDto) {
-		Board board = findBoard(requestDto.getBoardId());
+		findBoard(requestDto.getBoardId());
 		Deck deck = findDeck(deckId);
 
 		List<Deck> deckList = deckRepository.findAllDecksByBoardId(requestDto.getBoardId());
@@ -84,14 +84,14 @@ public class DeckServiceImpl implements DeckService {
 			deckSortedList.add(0, deck);
 		}
 
-		for (int i = 0; i < deckSortedList.size(); i++) {
-			deckSortedList.get(i).updateParent(null);
+		for (Deck value : deckSortedList) {
+			value.updateParent(null);
 		}
 
 		List<Long> list = new ArrayList<>();
 
-		for (int i = 0; i < deckSortedList.size(); i++) {
-			list.add(deckSortedList.get(i).getId());
+		for (Deck value : deckSortedList) {
+			list.add(value.getId());
 		}
 		return list;
 	}
@@ -108,7 +108,7 @@ public class DeckServiceImpl implements DeckService {
 	@Transactional
 	public void deleteDeck(Long deckId) {
 		Deck deck = findDeck(deckId);
-		if (deck.getIsDeleted()) {
+		if (Boolean.TRUE.equals(deck.getIsDeleted())) {
 			throw new CustomException(CustomErrorCode.ALREADY_DELETED_DECK, null);
 		}
 		Deck myChildDeck = deckRepository.findByParentAndIsDeletedFalse(deck);
@@ -128,7 +128,7 @@ public class DeckServiceImpl implements DeckService {
 	public List<DeckResponseDto> getDeletedDecks(Long boardId) {
 		Board board = findBoard(boardId);
 		List<Deck> deletedDeckList = deckRepository.findAllByBoardAndIsDeletedTrueOrderByModifiedAtDesc(board);
-		if (deletedDeckList.size() == 0) {
+		if (deletedDeckList.isEmpty()) {
 			throw new CustomException(CustomErrorCode.DELETED_DECK_NOT_FOUND, null);
 		}
 		return deletedDeckList.stream().map(DeckResponseDto::new).toList();
@@ -138,7 +138,7 @@ public class DeckServiceImpl implements DeckService {
 	@Transactional
 	public void restoreDeck(Long deckId) {
 		Deck deck = findDeck(deckId);
-		if (!deck.getIsDeleted()) {
+		if (Boolean.FALSE.equals(deck.getIsDeleted())) {
 			throw new CustomException(CustomErrorCode.NOT_DELETED_DECK, null);
 		}
 
