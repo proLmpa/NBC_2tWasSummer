@@ -45,7 +45,7 @@ public class CardRepositoryImpl implements CustomCardRepository {
 
         var query = queryFactory.select(card)
                 .from(board)
-                .join(board.deckList, deck)
+                .join(board.decks, deck)
                 .join(deck.cardList, card)
                 .where(
                         board.id.eq(boardId)
