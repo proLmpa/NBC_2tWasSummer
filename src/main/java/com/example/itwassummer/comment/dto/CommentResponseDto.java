@@ -1,13 +1,15 @@
 package com.example.itwassummer.comment.dto;
 
 import com.example.itwassummer.comment.entity.Comment;
-
 import java.time.LocalDateTime;
+import lombok.Getter;
 
+@Getter
 public class CommentResponseDto {
     private Long id;
     private String nickname;
     private String content;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

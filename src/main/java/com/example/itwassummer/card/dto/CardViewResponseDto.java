@@ -1,7 +1,9 @@
 package com.example.itwassummer.card.dto;
 
 import com.example.itwassummer.card.entity.Card;
+import com.example.itwassummer.cardlabel.dto.CardLabelResponseDto;
 import com.example.itwassummer.checklist.dto.CheckListResponseDto;
+import com.example.itwassummer.comment.dto.CommentResponseDto;
 import com.example.itwassummer.common.file.S3FileDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -42,6 +44,12 @@ public class CardViewResponseDto {
   //체크리스트 표시하는 리스트
   private List<CheckListResponseDto> checkLists = null;
 
+  //댓글 표시하는 리스트
+  private List<CommentResponseDto> comments = null;
+
+  //카드라벨 표시하는 리스트
+  private List<CardLabelResponseDto> cardLabels = null;
+
   // 생성자
   public CardViewResponseDto(Card card) {
     this.cardId = card.getId();
@@ -54,6 +62,12 @@ public class CardViewResponseDto {
     this.parentId = card.getParentId();
     this.checkLists = card.getCheckLists().stream().map(
         CheckListResponseDto::new
+    ).toList();
+    this.comments = card.getComments().stream().map(
+        CommentResponseDto::new
+    ).toList();
+    this.cardLabels = card.getCardLabels().stream().map(
+        CardLabelResponseDto::new
     ).toList();
   }
 }
