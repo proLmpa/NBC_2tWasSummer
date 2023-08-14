@@ -10,6 +10,7 @@ import com.example.itwassummer.board.repository.BoardRepository;
 import com.example.itwassummer.board.service.BoardServiceImpl;
 import com.example.itwassummer.card.dto.CardRequestDto;
 import com.example.itwassummer.card.dto.CardResponseDto;
+import com.example.itwassummer.card.dto.CardViewResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
 import com.example.itwassummer.cardmember.dto.CardMemberResponseDto;
@@ -146,7 +147,7 @@ public class CardServiceTest {
     CardResponseDto responseDto1 = cardService.save(requestDto1, files);
 
     assertNotNull(responseDto1.getDeckName());
-    assertEquals(responseDto1.getName(),cardName1);
+    assertEquals(responseDto1.getName(), cardName1);
     assertEquals(1, responseDto1.getParentId());
 
   }
@@ -156,10 +157,10 @@ public class CardServiceTest {
   @DisplayName("Card 수정")
   void UpdateTest() throws IOException {
     List<Deck> deckList = deckRepository.findAll();
-    Long deckId = deckList.get(deckList.size()-1).getId();
+    Long deckId = deckList.get(deckList.size() - 1).getId();
 
     List<Card> cardList = cardRepository.findAll();
-    Long cardId = cardList.get(cardList.size()-1).getId();
+    Long cardId = cardList.get(cardList.size() - 1).getId();
 
     String cardName1 = "UP-CARD1";
     String description1 = "예시카드 수정입니다.";
@@ -194,10 +195,10 @@ public class CardServiceTest {
   @DisplayName("Card 마감일 수정")
   void ChangeDueDateTest() {
     List<Deck> deckList = deckRepository.findAll();
-    Long deckId = deckList.get(deckList.size()-1).getId();
+    Long deckId = deckList.get(deckList.size() - 1).getId();
 
     List<Card> cardList = cardRepository.findAll();
-    Long cardId = cardList.get(cardList.size()-1).getId();
+    Long cardId = cardList.get(cardList.size() - 1).getId();
 
     LocalDateTime now = LocalDateTime.now();
     String nowDate = String.valueOf(now);
@@ -212,7 +213,7 @@ public class CardServiceTest {
   @DisplayName("Card 정렬순서 수정")
   void moveCardTest() {
     List<Card> cardList = cardRepository.findAll();
-    Long cardId = cardList.get(cardList.size()-1).getId();
+    Long cardId = cardList.get(cardList.size() - 1).getId();
 
     LocalDateTime now = LocalDateTime.now();
     Long order = 11L;
@@ -227,7 +228,7 @@ public class CardServiceTest {
   @DisplayName("Card 사용자 수정")
   void changeCardMemberTest() {
     List<Card> cardList = cardRepository.findAll();
-    Long cardId = cardList.get(cardList.size()-1).getId();
+    Long cardId = cardList.get(cardList.size() - 1).getId();
     String email1 = "test01@email.com";
     String email2 = "test02@email.com";
     String emails = email1 + "," + email2;
@@ -244,23 +245,36 @@ public class CardServiceTest {
   void changeCardDeckTest() {
     List<Card> cardList = cardRepository.findAll();
     List<Deck> deckList = deckRepository.findAll();
-    Long cardId = cardList.get(cardList.size()-1).getId();
-    Long deckId = deckList.get(deckList.size()-1).getId();
+    Long cardId = cardList.get(cardList.size() - 1).getId();
+    Long deckId = deckList.get(deckList.size() - 1).getId();
 
     CardResponseDto cardResponseDto = cardService.moveCardToOtherDeck(deckId, cardId, 1L);
 
-    assertEquals(cardResponseDto.getDeckName(), deckList.get(deckList.size()-1).getName());
+    assertEquals(cardResponseDto.getDeckName(), deckList.get(deckList.size() - 1).getName());
   }
+
 
   @Test
   @Order(7)
+  @DisplayName("Card 상세 조회")
+  void getCards() throws IOException {
+    List<Card> cardList = cardRepository.findAll();
+    Long cardId = cardList.get(cardList.size() - 1).getId();
+    CardViewResponseDto viewData = cardService.getCard(cardId);
+    String cardName1 = "UP-CARD1";
+    String description1 = "예시카드 수정입니다.";
+    assertEquals(viewData.getDescription(), description1);
+    assertEquals(viewData.getName(), cardName1);
+  }
+
+  @Test
+  @Order(8)
   @DisplayName("카드 삭제")
   void deleteDeckTest() {
     List<Card> cardList = cardRepository.findAll();
-    Long lastCardId =  cardList.get(cardList.size()-1).getId();
+    Long lastCardId = cardList.get(cardList.size() - 1).getId();
     cardService.delete(lastCardId);
   }
-
 
   @DisplayName("Deck 생성")
   void createDeckTest() {
@@ -272,10 +286,14 @@ public class CardServiceTest {
     String deckName3 = "Test-Deck-3";
     String deckName4 = "Test-Deck-4";
 
-    List<DeckResponseDto> findDeck1 = deckRepository.findByName(deckName1).stream().map(DeckResponseDto::new).toList();
-    List<DeckResponseDto> findDeck2 = deckRepository.findByName(deckName2).stream().map(DeckResponseDto::new).toList();
-    List<DeckResponseDto> findDeck3 = deckRepository.findByName(deckName3).stream().map(DeckResponseDto::new).toList();
-    List<DeckResponseDto> findDeck4 = deckRepository.findByName(deckName4).stream().map(DeckResponseDto::new).toList();
+    List<DeckResponseDto> findDeck1 = deckRepository.findByName(deckName1).stream()
+        .map(DeckResponseDto::new).toList();
+    List<DeckResponseDto> findDeck2 = deckRepository.findByName(deckName2).stream()
+        .map(DeckResponseDto::new).toList();
+    List<DeckResponseDto> findDeck3 = deckRepository.findByName(deckName3).stream()
+        .map(DeckResponseDto::new).toList();
+    List<DeckResponseDto> findDeck4 = deckRepository.findByName(deckName4).stream()
+        .map(DeckResponseDto::new).toList();
 
     DeckResponseDto responseDto1;
     DeckResponseDto responseDto2;
@@ -298,6 +316,7 @@ public class CardServiceTest {
     assertNotNull(responseDto3.getId());
     assertNotNull(responseDto4.getId());
   }
+
   @DisplayName("회원가입")
   void SignUp(SignupRequestDto signupRequestDto) {
     userService.signup(signupRequestDto);
