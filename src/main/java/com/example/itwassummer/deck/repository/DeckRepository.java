@@ -12,4 +12,7 @@ public interface DeckRepository extends JpaRepository<Deck, Long>, DeckCustomRep
 	Deck findByParentAndIsDeletedFalse(Deck deck);
 
 	List<Deck> findAllByBoardAndIsDeletedTrueOrderByModifiedAtDesc(Board board);
+
+	// 이름에따라 조회
+	List<Deck> findByName(String name);
 }
