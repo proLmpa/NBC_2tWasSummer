@@ -18,7 +18,7 @@ public class DeckResponseDto {
 		this.id = deck.getId();
 		this.parentId = deck.getParent() == null ? 0 : deck.getParent().getId();
 		this.name = deck.getName();
-		// this.card = deck.getCards()..... 필요
+	 	this.cards = deck.getCardList().stream().map(CardResponseDto::new).toList();
 	}
 
 }
