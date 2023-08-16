@@ -11,5 +11,7 @@ import java.util.List;
 public interface DeckRepository extends JpaRepository<Deck, Long>, DeckCustomRepository{
 	Deck findByParentAndIsDeletedFalse(Deck deck);
 
-	List<Deck> findAllByBoardAndIsDeletedTrue(Board board);
+	List<Deck> findAllByBoardAndIsDeletedTrueOrderByModifiedAtDesc(Board board);
+
+    void deleteAllByBoard_Id(Long id);
 }

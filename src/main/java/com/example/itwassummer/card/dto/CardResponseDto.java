@@ -32,6 +32,9 @@ public class CardResponseDto {
   /// 등록일
   private String createdAt;
 
+  /// 등록일
+  private String deckName;
+
   // 수정일
   private String modifiedAt;
 
@@ -44,5 +47,6 @@ public class CardResponseDto {
     this.createdAt = String.valueOf(card.getCreatedAt());
     this.modifiedAt = String.valueOf(card.getModifiedAt());
     this.parentId = card.getParentId();
+    this.deckName = card.getDeck().getName();
   }
 }

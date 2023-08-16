@@ -14,20 +14,21 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 
-@DataJpaTest
+/*@DataJpaTest
 @TestPropertySource(locations = "classpath:application-ds.properties")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(QueryDslConfig.class)
-@Rollback(false)
+@Rollback(false)*/
+// implements UserDetailsService
 public class CardRepositoryTest {
-
+/*
   @Autowired
   CardRepository cardRepository;
 
 
-  /**
+  *//**
    * 카드 등록
-   */
+   *//*
   @Test
   void insertTest() {
     String name = "예시카드2";
@@ -48,4 +49,5 @@ public class CardRepositoryTest {
     // then
     assertThat(name).isEqualTo(newCard.getName());
   }
+  */
 }

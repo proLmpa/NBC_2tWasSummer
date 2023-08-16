@@ -1,9 +1,7 @@
 package com.example.itwassummer.checklist.service;
 
-import com.example.itwassummer.card.dto.CardResponseDto;
 import com.example.itwassummer.card.entity.Card;
 import com.example.itwassummer.card.repository.CardRepository;
-import com.example.itwassummer.check.dto.ChecksResponseDto;
 import com.example.itwassummer.check.repository.ChecksRepository;
 import com.example.itwassummer.checklist.dto.CheckListRequestDto;
 import com.example.itwassummer.checklist.dto.CheckListResponseDto;
@@ -28,8 +26,8 @@ public class CheckListServiceImpl implements CheckListService {
   @Override
   public CheckListResponseDto getCheckList(Long listId) {
     CheckList checkList = this.findCheckList(listId);
-    CheckListResponseDto responseDto = new CheckListResponseDto(checkList);
-    return responseDto;
+
+    return new CheckListResponseDto(checkList);
   }
 
   @Override
@@ -41,8 +39,8 @@ public class CheckListServiceImpl implements CheckListService {
     Card card = findCard(requestDto.getCardId());
     checkList.addCard(card);
     CheckList returnCheckList = checkListRepository.save(checkList);
-    CheckListResponseDto responseDto = new CheckListResponseDto(returnCheckList);
-    return responseDto;
+
+    return new CheckListResponseDto(returnCheckList);
   }
 
   @Override
@@ -52,9 +50,8 @@ public class CheckListServiceImpl implements CheckListService {
 
     // checkList 내용 수정
     checkList.update(requestDto);
-    CheckListResponseDto responseDto = new CheckListResponseDto(checkList);
 
-    return responseDto;
+    return new CheckListResponseDto(checkList);
   }
 
   @Override

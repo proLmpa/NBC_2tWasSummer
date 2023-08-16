@@ -4,6 +4,7 @@ import com.example.itwassummer.board.repository.BoardRepository;
 import com.example.itwassummer.boardmember.repository.BoardMemberRepository;
 import com.example.itwassummer.common.error.CustomErrorCode;
 import com.example.itwassummer.common.exception.CustomException;
+import com.example.itwassummer.deck.repository.DeckRepository;
 import com.example.itwassummer.label.repository.LabelRepository;
 import com.example.itwassummer.user.dto.EditUserRequestDto;
 import com.example.itwassummer.user.dto.SignupRequestDto;
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final BoardMemberRepository boardMemberRepository;
     private final LabelRepository labelRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DeckRepository deckRepository;
 
     @Value("${admin.token}")
     private String adminToken;
@@ -78,6 +80,7 @@ public class UserServiceImpl implements UserService {
                 board -> {
                     boardMemberRepository.deleteAllByBoard_Id(board.getId());
                     labelRepository.deleteAllByBoard_Id(board.getId());
+                    deckRepository.deleteAllByBoard_Id(board.getId());
                 }
         );
         boardRepository.deleteAllByUser_Id(found.getId());

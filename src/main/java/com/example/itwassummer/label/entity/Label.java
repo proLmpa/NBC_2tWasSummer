@@ -1,8 +1,11 @@
 package com.example.itwassummer.label.entity;
 
 import com.example.itwassummer.board.entity.Board;
+import com.example.itwassummer.cardlabel.entity.CardLabel;
 import com.example.itwassummer.label.dto.LabelRequestDto;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,6 +42,9 @@ public class Label {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
+    @OneToMany(mappedBy = "label", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CardLabel> cardLabels = new ArrayList<>();
 
     ////연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
     public void setBoard(Board board) {

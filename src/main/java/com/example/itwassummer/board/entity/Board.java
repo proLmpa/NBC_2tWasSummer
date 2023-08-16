@@ -51,7 +51,7 @@ public class Board extends Timestamped {
 
     // 보드 덱 목록
     @OneToMany(mappedBy = "board")
-    private List<Deck> deckList = new ArrayList<>();
+    private List<Deck> decks = new ArrayList<>();
 
     public Board(BoardRequestDto requestDto, User user) {
         this.name = requestDto.getName();

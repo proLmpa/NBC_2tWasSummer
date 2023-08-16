@@ -7,14 +7,18 @@ import com.example.itwassummer.checklist.entity.CheckList;
 import com.example.itwassummer.comment.entity.Comment;
 import com.example.itwassummer.common.entity.Timestamped;
 import com.example.itwassummer.common.file.S3FileDto;
+import com.example.itwassummer.deck.entity.Deck;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -69,14 +73,19 @@ public class Card extends Timestamped {
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CardMember> cardMembers = new ArrayList<>();
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "deck_id", nullable = false)
+  private Deck deck;
+
   // 생성자
   @Builder
-  public Card(CardRequestDto requestDto) {
+  public Card(CardRequestDto requestDto, Deck deck) {
     this.name = requestDto.getName();
     this.dueDate = requestDto.getDueDate();
     this.description = requestDto.getDescription();
     this.attachment = requestDto.getAttachment();
     this.parentId = requestDto.getParentId();
+    this.deck = deck;
   }
 
   // 수정
@@ -95,5 +104,12 @@ public class Card extends Timestamped {
   // 정렬순서 수정
   public void updateParentId(Long parentId) {
     this.parentId = parentId;
+  }
+
+  // 덱 정보와 정렬 순서 변경
+  public Card updateDeckAndParentId(Deck deck, Long parentId) {
+    this.deck = deck;
+    this.parentId = parentId;
+    return this;
   }
 }

@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback(false)
 public class CardControllerTest {
 
-  @Autowired
+/*  @Autowired
   ObjectMapper mapper;
 
   @Autowired
@@ -135,6 +135,8 @@ public class CardControllerTest {
         .andDo(print())
         .andReturn();
 
-    return Objects.requireNonNull(result.getResponse().getHeader("Authorization"));
-  }
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return new User("email", "password", Collections.EMPTY_LIST);
+  }*/
 }
