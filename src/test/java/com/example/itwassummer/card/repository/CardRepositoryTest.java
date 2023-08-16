@@ -1,6 +1,5 @@
 package com.example.itwassummer.card.repository;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.itwassummer.card.dto.CardRequestDto;
@@ -49,6 +48,6 @@ public class CardRepositoryTest {
     Card newCard = cardRepository.save(cards);
     // then
     assertThat(name).isEqualTo(newCard.getName());
-  }*/
-
+  }
+  */
 }
